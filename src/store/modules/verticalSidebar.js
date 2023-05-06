@@ -36,7 +36,6 @@ const mutations = {
       .isVerticalSidebar;
     state.verticalSidebar.isVerticalCompact = !state.verticalSidebar
       .isVerticalCompact;
-    console.log("test");
   },
   SIDEBAR_COMPACT(state, data) {
     if (state.verticalSidebar.isVerticalSidebar == false) {

@@ -10,78 +10,80 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="'Edit'" :folder="'Location'" />
 
     <b-row>
       <b-col md="12 mb-30">
         <b-card title="Form Inputs">
-          <b-form @submit.prevent="onSubmit">
-            <b-row>
-              <b-form-group
-                class="col-md-6 mb-3"
+          <ValidationObserver v-slot="{ handleSubmit }">
+            <b-form @submit.prevent="handleSubmit(onSubmit)">
+              <b-row>
+                <b-form-group
+                  class="col-md-6 mb-3"
+                  label="Name"
+                  label-for="input-1"
+                >
+                  <ValidationProvider name="Name" rules="required" v-slot="{ errors }">
+                    <b-form-input
+                      v-model="form.name"
+                      type="text"
+                      placeholder="Name"
+                    ></b-form-input>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
 
-                label="Name"
-                label-for="input-1"
-              >
-                <b-form-input
+                <b-form-group
+                  class="col-md-6 mb-3"
+                  label="Address"
+                  label-for="input-1"
+                >
+                  <ValidationProvider name="Address" rules="required" v-slot="{ errors }">
+                    <b-form-input
+                      v-model="form.address"
+                      type="text"
+                      placeholder="Address"
+                    ></b-form-input>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
 
-                  v-model="form.name"
-                  type="text"
-                  required
-                  placeholder="Name"
-                ></b-form-input>
-              </b-form-group>
+                <b-form-group
+                  class="col-md-6 mb-3"
+                  label="Email"
+                  label-for="input-1"
+                >
+                  <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
+                    <b-form-input
+                      v-model="form.email"
+                      type="email"
+                      placeholder="Email"
+                    ></b-form-input>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
 
-              <b-form-group
-                class="col-md-6 mb-3"
+                <b-form-group
+                  class="col-md-6 mb-3"
+                  label="Phone"
+                  label-for="input-1"
+                >
+                  <ValidationProvider name="Phone" rules="required" v-slot="{ errors }">
+                    <b-form-input
+                      v-model="form.mobile"
+                      type="text"
+                      placeholder="Phone"
+                    ></b-form-input>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
 
-                label="Address"
-                label-for="input-1"
-              >
-                <b-form-input
-
-                  v-model="form.address"
-                  type="text"
-                  required
-                  placeholder="Address"
-                ></b-form-input>
-              </b-form-group>
-
-              <b-form-group
-                class="col-md-6 mb-3"
-
-                label="Email"
-                label-for="input-1"
-              >
-                <b-form-input
-
-                  v-model="form.email"
-                  type="email"
-                  required
-                  placeholder="Email"
-                ></b-form-input>
-              </b-form-group>
-
-              <b-form-group
-                class="col-md-6 mb-3"
-
-                label="Phone"
-                label-for="input-1"
-              >
-                <b-form-input
-
-                  v-model="form.mobile"
-                  type="text"
-                  required
-                  placeholder="Phone"
-                ></b-form-input>
-              </b-form-group>
-
-              <b-col md="12">
-                <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
-              </b-col>
-            </b-row>
-          </b-form>
+                <b-col md="12">
+                  <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
+                </b-col>
+              </b-row>
+            </b-form>
+          </ValidationObserver>
         </b-card>
       </b-col>
     </b-row>

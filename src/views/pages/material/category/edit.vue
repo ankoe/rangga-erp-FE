@@ -10,33 +10,35 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="'Edit'" :folder="'Material Category'" />
 
     <b-row>
       <b-col md="12 mb-30">
         <b-card>
-          <b-form @submit.prevent="onSubmit">
-            <b-row>
-              <b-form-group
-                class="col-md-6 mb-3"
+          <ValidationObserver v-slot="{ handleSubmit }">
+            <b-form @submit.prevent="handleSubmit(onSubmit)">
+              <b-row>
+                <b-form-group
+                  class="col-md-6 mb-3"
+                  label="Name"
+                  label-for="input-1"
+                >
+                  <ValidationProvider name="Name" rules="required|email" v-slot="{ errors }">
+                    <b-form-input
+                      v-model="form.name"
+                      type="text"
+                      placeholder="Category Name"
+                    ></b-form-input>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
 
-                label="Name"
-                label-for="input-1"
-              >
-                <b-form-input
-
-                  v-model="form.name"
-                  type="text"
-                  required
-                  placeholder="Category Name"
-                ></b-form-input>
-              </b-form-group>
-
-              <b-col md="12">
-                <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
-              </b-col>
-            </b-row>
-          </b-form>
+                <b-col md="12">
+                  <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
+                </b-col>
+              </b-row>
+            </b-form>
+          </ValidationObserver>
         </b-card>
       </b-col>
     </b-row>

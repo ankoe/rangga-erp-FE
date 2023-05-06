@@ -9857,6 +9857,11 @@
     "lodash" "^4.17.15"
     "popper.js" "^1.14.7"
 
+"v-money@^0.8.1":
+  "integrity" "sha512-raz87AP5F2YEpv1GAocI3SC/y9af1+TQeZQIhAK5UNovho6dnh6RQBa5UG8ZNC+BPLpUh5VECi7EWTjr4+4s1g=="
+  "resolved" "https://registry.npmjs.org/v-money/-/v-money-0.8.1.tgz"
+  "version" "0.8.1"
+
 "v2-datepicker@^3.1.1":
   "integrity" "sha512-8AasUMiok5ZLhvbL4wImjiFg/ftRnbqdFoThdLSEgVN7nEU9MfIjQ2irK3+VGcpjZr436RX3LtrwsU4vnsaOig=="
   "resolved" "https://registry.npmjs.org/v2-datepicker/-/v2-datepicker-3.1.1.tgz"
@@ -9879,6 +9884,11 @@
   "integrity" "sha1-IpnwLG3tMNSllhsLn3RSShj2NPw="
   "resolved" "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   "version" "1.1.2"
+
+"vee-validate@^3.4.15":
+  "integrity" "sha512-qEtvq9X2N7l5pjBe/6YGrrIBHxJA4KTrb3QrER3qzM7fzkH730m8LyVWMIzM47l//618nlUa7VvTdMFTRKr8tQ=="
+  "resolved" "https://registry.npmjs.org/vee-validate/-/vee-validate-3.4.15.tgz"
+  "version" "3.4.15"
 
 "vendors@^1.0.0":
   "integrity" "sha512-/juG65kTL4Cy2su4P8HjtkTxk6VmJDiOPBufWniqQ6wknac6jNiXS9vU+hO3wgusiyqWlzTbVHi0dyJqRONg3w=="

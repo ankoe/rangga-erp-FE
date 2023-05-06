@@ -10,7 +10,7 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Role'" :folder="'Pages'" />
+    <breadcumb :page="'List'" :folder="'Role'" />
 
     <b-card class="wrapper">
       <b-card-header>
@@ -68,9 +68,8 @@
 
   </div>
 </template>
-<script>
-import axios from 'axios'
 
+<script>
 export default {
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used

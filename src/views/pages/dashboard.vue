@@ -10,7 +10,7 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Dashboard'" :folder="'Pages'" />
+    <breadcumb :page="'Dashboard'" :folder="'Page'" />
 
     
   </div>

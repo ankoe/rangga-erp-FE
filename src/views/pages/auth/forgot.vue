@@ -12,19 +12,24 @@
                 <img :src="logo" alt="" />
               </div>
               <h1 class="mb-3 text-18">Forgot Password</h1>
-              <form action="">
-                <div class="form-group">
-                  <label for="email">Email address</label>
-                  <input
-                    id="email"
-                    class="form-control form-control-rounded"
-                    type="email"
-                  />
-                </div>
-                <button class="btn btn-primary btn-block btn-rounded mt-3">
-                  Reset Password
-                </button>
-              </form>
+              <ValidationObserver v-slot="{ handleSubmit }">
+                <form @submit.prevent="handleSubmit(onSubmit)">
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <ValidationProvider name="E-mail" rules="required|email" v-slot="{ errors }">
+                      <input
+                        id="email"
+                        class="form-control form-control-rounded"
+                        type="email"
+                      />
+                      <span class="text-danger small">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                  <button class="btn btn-primary btn-block btn-rounded mt-3">
+                    Reset Password
+                  </button>
+                </form>
+              </ValidationObserver>
               <div class="mt-3 text-center">
                 <router-link to="signIn" tag="a" class="text-muted ">
                   <u>Sign In</u>
@@ -73,6 +78,9 @@ export default {
       logo: require("@/assets/images/logo.png"),
       formImage: require("@/assets/images/photo-long-3.jpg")
     };
+  },
+  methods: {
+    async onSubmit() {}
   }
 };
 </script>

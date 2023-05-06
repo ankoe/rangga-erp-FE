@@ -10,7 +10,7 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="'List'" :folder="'Vendor'" />
 
     <b-card class="wrapper">
       <b-card-header>

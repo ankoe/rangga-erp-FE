@@ -8,45 +8,51 @@
               <div class="auth-logo text-center mb-30">
                 <img :src="logo" />
               </div>
-              <h1 class="mb-3 text-18">Sign In</h1>
-              <b-form @submit.prevent="onSubmit">
-                <b-form-group label="Email Address" class="text-12">
-                  <b-form-input
-                    class="form-control-rounded"
-                    type="text"
-                    v-model="form.email"
-                    email
-                    required
-                  />
-                </b-form-group>
+              <h1 class="mb-3 text-18">Login</h1>
+              <ValidationObserver v-slot="{ handleSubmit }">
+                <b-form @submit.prevent="handleSubmit(onSubmit)">
+                  <b-form-group label="Email Address" class="text-12">
+                    <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
+                      <b-form-input
+                        class="form-control-rounded"
+                        type="email"
+                        v-model="form.email"
+                      />
+                      <span class="text-danger small">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
 
-                <b-form-group label="Password" class="text-12">
-                  <b-form-input class="form-control-rounded" type="password" v-model="form.password" />
-                </b-form-group>
+                  <b-form-group label="Password" class="text-12">
+                    <ValidationProvider name="Password" rules="required" v-slot="{ errors }">
+                      <b-form-input class="form-control-rounded" type="password" v-model="form.password" />
+                      <span class="text-danger small">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
 
-                <!-- <b-button block to="/" variant="primary btn-rounded mt-2"
-                  >Sign In</b-button
-                >-->
-                <b-button
-                  type="submit"
-                  tag="button"
-                  class="btn-rounded btn-block mt-2"
-                  variant="primary mt-2"
-                  :disabled="loading"
-                >SignIn</b-button>
-                <div v-once class="typo__p" v-if="loading">
-                  <div class="spinner sm spinner-primary mt-3"></div>
-                </div>
-                <b-button
-                  to="signUp"
-                  block
-                  variant="primary mt-2"
-                  class="btn-rounded"
-                >Create an account</b-button>
-              </b-form>
+                  <!-- <b-button block to="/" variant="primary btn-rounded mt-2"
+                    >Sign In</b-button
+                  >-->
+                  <b-button
+                    type="submit"
+                    tag="button"
+                    class="btn-rounded btn-block mt-2"
+                    variant="primary mt-2"
+                    :disabled="loading"
+                  >Login</b-button>
+                  <div v-once class="typo__p" v-if="loading">
+                    <div class="spinner sm spinner-primary mt-3"></div>
+                  </div>
+                  <b-button
+                    :to="{ name: 'register' }"
+                    block
+                    variant="primary mt-2"
+                    class="btn-rounded"
+                  >Create an account</b-button>
+                </b-form>
+              </ValidationObserver>
 
               <div class="mt-3 text-center">
-                <router-link to="forgot" tag="a" class="text-muted">
+                <router-link :to="{ name: 'forgot' }" tag="a" class="text-muted">
                   <u>Forgot Password?</u>
                 </router-link>
               </div>
@@ -105,6 +111,7 @@ export default {
 
   methods: {
     async onSubmit() {
+      console.log("klik")
       this.loading = true
 
       let { data } = await this.axios.post('auth/login', {

@@ -16,12 +16,6 @@
         <div>
           <img class src="@/assets/images/logo.png" />
         </div>
-        <div class="toggle-sidebar-compact">
-          <label class="switch ul-switch switch-white ml-auto">
-            <input @click="switchSidebar" type="checkbox" />
-            <span class="ul-slider o-hidden"></span>
-          </label>
-        </div>
       </div>
 
       <div class="close-mobile-menu" @click="mobileSidebar">
@@ -30,42 +24,43 @@
 
       <div class="mt-4 main-menu">
         <ul class="ul-vertical-sidebar pl-4" id="menu">
-
-          <li class="Ul_li--hover">
-            <div v-b-toggle.collapse-10>
-              <a class="has-arrow" href="#" :class="{ active: selectedParentMenu == 'pages' }">
-                <i class="nav-icon i-Double-Tap text-17 mr-3"></i>
+          <template v-for="(link, index) in links">
+            <li v-if="link.type == 'dropdown'" class="Ul_li--hover">
+              <div v-b-toggle.collapse-10>
+                <a class="has-arrow" href="#" :class="{ active: selectedParentMenu == 'pages' }">
+                  <i v-if="link.icon" :class="['nav-icon text-17 mr-3', link.icon]"></i>
+                  <span
+                    class="text-14"
+                    :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
+                  >{{ link.title }}</span>
+                  <arrowIcon />
+                </a>
+              </div>
+              <b-collapse :id="'collapse-' + index">
+                <ul
+                  class="Ul_collapse"
+                  :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
+                >
+                  <li v-for="(child, i) in link.children" class="item-name">
+                    <router-link tag="a" :to="child.url" class href="">
+                      <i v-if="child.icon" :class="['nav-icon', child.icon]"></i>
+                      <span class="item-name ml-1">{{ child.title }}</span>
+                    </router-link>
+                  </li>
+                </ul>
+              </b-collapse>
+            </li>
+            <p v-else-if="link.type == 'header'" class="main-menu-title text-uppercase text-12 mt-4 mb-2">{{ link.title }}</p>
+            <li v-else-if="link.type == 'link'" class="Ul_li--hover">
+              <router-link tag="a" :to="link.url"  class="has-arrow" href="">
+                <i v-if="link.icon" :class="['nav-icon text-17 mr-3', link.icon]"></i>
                 <span
                   class="text-14"
                   :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
-                >Pages</span>
-                <arrowIcon />
-              </a>
-            </div>
-            <b-collapse id="collapse-10">
-              <ul
-                class="Ul_collapse"
-                :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
-              >
-                <li v-for="(link, index) in links" class="item-name">
-                  <router-link tag="a" :to="link.url" class href="#">
-                    <i class="nav-icon i-File-Search"></i>
-                    <span class="item-name ml-1">{{ link.title }}</span>
-                  </router-link>
-                </li>
-              </ul>
-            </b-collapse>
-          </li>
-          <p class="main-menu-title text-uppercase text-12 mt-4 mb-2">UI Elements</p>
-          <li class="Ul_li--hover">
-            <a class="has-arrow" href="http://demos.ui-lib.com/gull-vue-doc/">
-              <i class="nav-icon i-Safe-Box1 text-17 mr-3"></i>
-              <span
-                class="text-14"
-                :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
-              >Doc</span>
-            </a>
-          </li>
+                >{{ link.title }}</span>
+              </router-link>
+            </li>
+          </template>
         </ul>
       </div>
     </div>
@@ -86,37 +81,159 @@ export default {
       selectedParentMenu: "",
       links: [
         {
+          type: 'link',
           title: 'Dashboard',
-          url: { name: 'dashboard' }
+          url: { name: 'dashboard' },
+          icon: 'i-Safe-Box1'
         },
         {
-          title: 'User',
-          url: { name: 'user-index' }
+          type: 'header',
+          title: 'P2P'
         },
         {
-          title: 'Role',
-          url: { name: 'role-index' }
-        },
-        {
-          title: 'Material Category',
-          url: { name: 'material-category-index' }
-        },
-        {
-          title: 'Material',
-          url: { name: 'material-index' }
-        },
-        {
-          title: 'Vendor',
-          url: { name: 'vendor-index' }
-        },
-        {
-          title: 'Location',
-          url: { name: 'location-index' }
-        },
-        {
+          type: 'dropdown',
           title: 'Purchase Request',
-          url: { name: 'purchase-request-index' }
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'Purchase Request List',
+              url: { name: 'purchase-request-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Create Purchase request',
+              url: { name: 'purchase-request-create' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
         },
+        {
+          type: 'header',
+          title: 'Data'
+        },
+        {
+          type: 'dropdown',
+          title: 'Material',
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'Material List',
+              url: { name: 'material-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Material Add',
+              url: { name: 'material-create' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
+        },
+        {
+          type: 'dropdown',
+          title: 'Material Category',
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'Material Category List',
+              url: { name: 'material-category-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Material Category Add',
+              url: { name: 'material-category-create' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
+        },
+        {
+          type: 'dropdown',
+          title: 'Vendor',
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'Vendor List',
+              url: { name: 'vendor-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Vendor Add',
+              url: { name: 'vendor-create' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
+        },
+        {
+          type: 'dropdown',
+          title: 'Location',
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'Location List',
+              url: { name: 'location-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Location Add',
+              url: { name: 'location-create' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
+        },
+        {
+          type: 'header',
+          title: 'User Management'
+        },
+        {
+          type: 'dropdown',
+          title: 'User',
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'User List',
+              url: { name: 'user-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'User Add',
+              url: { name: 'user-create' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
+        },
+        {
+          type: 'dropdown',
+          title: 'Role',
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'Role List',
+              url: { name: 'role-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Role Add',
+              url: { name: 'role-create' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
+        },
+        {
+          type: 'header',
+          title: 'Other'
+        },
+        {
+          type: 'dropdown',
+          title: 'Config',
+          icon: 'i-Safe-Box1',
+          children: [
+            {
+              title: 'Approval',
+              url: { name: 'config-approval' },
+              icon: 'i-Safe-Box1',
+            },
+          ]
+        },
+
       ]
     };
   },
@@ -142,7 +259,6 @@ export default {
 
       if (currentParentUrl !== undefined || currentParentUrl !== null) {
         // this.selectedParentMenu = currentParentUrl.toLowerCase();
-        console.log(currentParentUrl);
       } else {
         this.selectedParentMenu = "dashboards";
       }

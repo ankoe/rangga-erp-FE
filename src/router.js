@@ -204,6 +204,19 @@ const routes = [
         component: () => import("./views/pages/purchase_request/edit")
       },
 
+      // config
+      {
+        path: "config",
+        name: "config-index",
+        // component: () => import("./views/pages/purchase_request/index"),
+        redirect: "config/approval",
+      },
+      {
+        path: "config/approval",
+        name: "config-approval",
+        component: () => import("./views/pages/config/approval"),
+      },
+
     ]
   },
 
