@@ -44,10 +44,14 @@
               </div>
           </template>
 
-          <template #cell(action)="{ item }">
-            <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
-              Edit
-            </router-link>
+          <template #cell(created_at)="{ value }">
+            {{ value | luxon }}
+          </template>
+          <template #cell(updated_at)="{ value }">
+            {{ value | luxon }}
+          </template>
+          <template #cell(total)="{ value }">
+            {{ $n(value, 'currency', 'id-ID') }}
           </template>
       </b-table>
 
@@ -70,22 +74,33 @@
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "Purchase Request",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),
       items: [],
       fields: [
         {
-          key: 'display_name',
-          label: 'Name',
+          key: 'user.name',
+          label: 'Username',
         },
         {
-          key: 'group',
-          label: 'Group',
+          key: 'status.description',
+          label: 'Status',
         },
         {
-          key: 'action',
-          label: 'Action',
+          key: 'created_at',
+          label: 'Created PR',
+        },
+        {
+          key: 'updated_at',
+          label: 'updated PR',
+        },
+        {
+          key: 'total',
+          label: 'Total Value',
         },
       ],
       meta: {
@@ -109,7 +124,10 @@ export default {
       this.meta.total = data.meta.total
       this.meta.perPage = data.meta.per_page
       this.meta.currentPage = data.meta.current_page
-    }
+    },
+    onRowSelected(items) {
+      this.$router.push({ name: 'purchase-request-detail', params: {id: items[0].id} })
+    },
   }
 }
 </script>

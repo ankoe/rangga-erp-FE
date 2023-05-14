@@ -43,6 +43,9 @@
                   <strong>Loading...</strong>
               </div>
           </template>
+          <template #cell(price)="{ value, item }">
+            {{ $n(value, 'currency', 'id-ID') }}
+          </template>
           <template #cell(action)="{ item }">
             <router-link :to="{ name: 'material-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
               Edit
@@ -69,6 +72,9 @@
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "Material",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),
@@ -97,6 +103,10 @@ export default {
         {
           key: 'price',
           label: 'Price',
+        },
+        {
+          key: 'stock',
+          label: 'Stock',
         },
         {
           key: 'action',

@@ -17,6 +17,9 @@
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "Material",
+  },
   data() {
     return {
      

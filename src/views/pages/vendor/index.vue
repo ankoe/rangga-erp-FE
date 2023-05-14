@@ -33,7 +33,7 @@
         </b-row>
       </b-card-header>
 
-      <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected" :busy="loading" show-empty>
+      <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
           <template #empty="scope">
               Data not found or empty
           </template>
@@ -70,6 +70,9 @@
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "Vendor",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),
@@ -78,6 +81,10 @@ export default {
         {
           key: 'name',
           label: 'Name',
+        },
+        {
+          key: 'email',
+          label: 'Email',
         },
         {
           key: 'material_category.name',

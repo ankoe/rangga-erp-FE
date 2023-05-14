@@ -12,7 +12,7 @@
               <ValidationObserver v-slot="{ handleSubmit }">
                 <b-form @submit.prevent="handleSubmit(onSubmit)">
                   <b-form-group label="Email Address" class="text-12">
-                    <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
+                    <ValidationProvider ref="email" name="Email" rules="required|email" v-slot="{ errors }">
                       <b-form-input
                         class="form-control-rounded"
                         type="email"
@@ -23,31 +23,22 @@
                   </b-form-group>
 
                   <b-form-group label="Password" class="text-12">
-                    <ValidationProvider name="Password" rules="required" v-slot="{ errors }">
+                    <ValidationProvider ref="password" name="Password" rules="required" v-slot="{ errors }">
                       <b-form-input class="form-control-rounded" type="password" v-model="form.password" />
                       <span class="text-danger small">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </b-form-group>
 
-                  <!-- <b-button block to="/" variant="primary btn-rounded mt-2"
-                    >Sign In</b-button
-                  >-->
                   <b-button
                     type="submit"
                     tag="button"
                     class="btn-rounded btn-block mt-2"
                     variant="primary mt-2"
                     :disabled="loading"
-                  >Login</b-button>
+                  >Send</b-button>
                   <div v-once class="typo__p" v-if="loading">
                     <div class="spinner sm spinner-primary mt-3"></div>
                   </div>
-                  <b-button
-                    :to="{ name: 'register' }"
-                    block
-                    variant="primary mt-2"
-                    class="btn-rounded"
-                  >Create an account</b-button>
                 </b-form>
               </ValidationObserver>
 
@@ -67,22 +58,12 @@
           >
             <div class="pr-3 auth-right">
               <router-link
-                to="signUp"
+                :to="{ name: 'register' }"
                 class="btn btn-rounded btn-outline-primary btn-outline-email btn-block btn-icon-text"
                 href="signup.html"
               >
-                <i class="i-Mail-with-At-Sign"></i> Sign up with Email
+                Create an account
               </router-link>
-              <a
-                class="btn btn-rounded btn-outline-primary btn-outline-google btn-block btn-icon-text"
-              >
-                <i class="i-Google-Plus"></i> Sign up with Google
-              </a>
-              <a
-                class="btn btn-rounded btn-outline-primary btn-block btn-icon-text btn-outline-facebook"
-              >
-                <i class="i-Facebook-2"></i> Sign up with Facebook
-              </a>
             </div>
           </b-col>
         </div>
@@ -111,7 +92,6 @@ export default {
 
   methods: {
     async onSubmit() {
-      console.log("klik")
       this.loading = true
 
       let { data } = await this.axios.post('auth/login', {
@@ -119,17 +99,20 @@ export default {
         password: this.form.password
       })
 
-      console.log(data, 'data')
-
       if (data.status == "SUCCESS") {
         // sementara, harusnya lewat store
         console.log('pl')
         localStorage.setItem("token", data.data.token)
         this.$router.push('/dashboard')
       } else {
-        // ada validation form
+        if (data.data) {
+          this.$refs.email.applyResult({ errors: data.data.email ?? [] })
+          this.$refs.password.applyResult({ errors: data.data.password ?? [] })
+        } else {
+          alert(data.message)
+        }
 
-        // jika tidak ada validation form, error global
+        this.form.password = null
       }
 
       this.loading = false

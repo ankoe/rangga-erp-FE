@@ -74,7 +74,7 @@ const routes = [
 
       // user
       {
-        path: "user/create",
+        path: "user",
         name: "user-index",
         component: () => import("./views/pages/user/index")
       },
@@ -118,7 +118,7 @@ const routes = [
 
       // material
       {
-        path: "/material-category",
+        path: "material-category",
         name: "material-category-index",
         component: () => import("./views/pages/material/category/index")
       },
@@ -199,9 +199,26 @@ const routes = [
         component: () => import("./views/pages/purchase_request/detail"),
       },
       {
-        path: "purchase-request/:id/edit",
-        name: "purchase-request-edit",
-        component: () => import("./views/pages/purchase_request/edit")
+        path: "purchase-request/:id/item/create",
+        name: "purchase-request-item-create",
+        component: () => import("./views/pages/purchase_request/item_create")
+      },
+      {
+        path: "purchase-request/:id/item/:item",
+        name: "purchase-request-item-edit",
+        component: () => import("./views/pages/purchase_request/item_edit")
+      },
+
+      // rfq
+      {
+        path: "rfq",
+        name: "rfq-index",
+        component: () => import("./views/pages/rfq/index"),
+      },
+      {
+        path: "rfq/:id",
+        name: "rfq-detail",
+        component: () => import("./views/pages/rfq/detail"),
       },
 
       // config
@@ -229,18 +246,33 @@ const routes = [
       {
         path: "login",
         name: "login",
-        component: () => import("./views/pages/auth/signIn")
+        component: () => import("./views/pages/auth/login")
       },
       {
         path: "register",
         name: "register",
-        component: () => import("./views/pages/auth/signUp")
+        component: () => import("./views/pages/auth/register")
       },
       {
-        path: "forgot",
-        name: "forgot",
-        component: () => import("./views/pages/auth/forgot")
-      }
+        path: "activation",
+        name: "activation-resend",
+        component: () => import("./views/pages/auth/activationResend")
+      },
+      {
+        path: "activation/confirmation",
+        name: "activation-confirmation",
+        component: () => import("./views/pages/auth/activationSubmit")
+      },
+      {
+        path: "password",
+        name: "password-forgot",
+        component: () => import("./views/pages/auth/passwordForgot")
+      },
+      {
+        path: "password/reset",
+        name: "password-reset",
+        component: () => import("./views/pages/auth/passwordReset")
+      },
     ]
   },
 
