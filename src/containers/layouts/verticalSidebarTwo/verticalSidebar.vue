@@ -26,7 +26,7 @@
         <ul class="ul-vertical-sidebar pl-4" id="menu">
           <template v-for="(link, index) in links">
             <li v-if="link.type == 'dropdown'" class="Ul_li--hover">
-              <div v-b-toggle.collapse-10>
+              <div v-b-toggle="'collapse-' + index">
                 <a class="has-arrow" href="#" :class="{ active: selectedParentMenu == 'pages' }">
                   <i v-if="link.icon" :class="['nav-icon text-17 mr-3', link.icon]"></i>
                   <span
@@ -106,6 +106,12 @@ export default {
               icon: 'i-Safe-Box1',
             },
           ]
+        },
+        {
+          type: 'link',
+          title: 'RFQ',
+          url: { name: 'rfq-index' },
+          icon: 'i-Safe-Box1'
         },
         {
           type: 'header',

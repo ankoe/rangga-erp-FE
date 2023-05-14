@@ -33,7 +33,7 @@
         </b-row>
       </b-card-header>
 
-      <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
+      <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected" :busy="loading" show-empty>
           <template #empty="scope">
               Data not found or empty
           </template>
@@ -44,88 +44,79 @@
               </div>
           </template>
 
-          <template #cell(price)="{ value }">
-            {{ $n(value, 'currency', 'id-ID') }}
-          </template>
-
-          <template #cell(expected_at)="{ value }">
-            {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
-          </template>
-
-          <template #cell(file)="{ value, item }">
-            <a :href="value" target="_blank">File</a>
-          </template>
-
-          <template #cell(total)="{ value }">
-            {{ $n(value, 'currency', 'id-ID') }}
-          </template>
-
           <template #cell(action)="{ item }">
-            <router-link :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }" class="btn btn-info btn-sm">
+            <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
               Edit
-            </router-link>
-            <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-danger btn-sm">
-              Delete
             </router-link>
           </template>
       </b-table>
 
+      <div class="mt-3">
+        <b-pagination
+          v-model="meta.currentPage"
+          :total-rows="meta.total"
+          :per-page="meta.perPage"
+          first-text="First"
+          prev-text="Prev"
+          next-text="Next"
+          last-text="Last"
+          align="right"
+          @change="getItems"
+        ></b-pagination>
+      </div>
     </b-card>
 
   </div>
 </template>
 <script>
 export default {
-  metaInfo: {
-    title: "Purchase Request",
-  },
   data() {
     return {
       token: localStorage.getItem("token"),
       items: [],
       fields: [
         {
-          key: 'material.number',
+          key: 'name',
           label: 'Material Number',
         },
         {
-          key: 'material.name',
+          key: 'status',
           label: 'Material Name',
         },
         {
-          key: 'material.description',
+          key: 'created_at',
           label: 'Material Desc',
         },
         {
-          key: 'material.uom',
+          key: 'updated_at',
           label: 'UOM',
         },
         {
-          key: 'quantity',
+          key: 'updated_at',
           label: 'QTY',
         },
         {
-          key: 'vendor.name',
+          key: 'updated_at',
           label: 'Proposed Supplier',
         },
         {
-          key: 'price',
+          key: 'updated_at',
           label: 'Unit Price',
         },
         {
-          key: 'branch.name',
+          key: 'updated_at',
           label: 'Delivery Location',
         },
         {
-          key: 'expected_at',
+          key: 'updated_at',
           label: 'Expected Date',
         },
         {
-          key: 'file',
+          key: 'updated_at',
           label: 'File',
         },
         {
-          key: 'total',
+          key: 'updated_at',
           label: 'Total Value',
         },
         {
@@ -133,18 +124,27 @@ export default {
           label: 'Action',
         },
       ],
+      meta: {
+        total: 0,
+        perPage: 10,
+        currentPage: 1,
+      }
     }
   },
   mounted() {
     this.getItems()
   },
   methods: {
-    async getItems() {
-      let { data } = await this.axios.get('purchase-request-item/all?purchase_request_id=' + this.$route.params.id, {
+    async getItems(page) {
+      page = page?? 1
+      let { data } = await this.axios.get('purchase-request?page=' + page, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
       this.items = data.data
+      this.meta.total = data.meta.total
+      this.meta.perPage = data.meta.per_page
+      this.meta.currentPage = data.meta.current_page
     }
   }
 }

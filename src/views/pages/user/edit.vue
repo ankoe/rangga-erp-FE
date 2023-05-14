@@ -15,15 +15,15 @@
     <b-row>
       <b-col md="12 mb-30">
         <b-card>
-          <ValidationObserver v-slot="{ handleSubmit }">
+          <ValidationObserver v-slot="{ handleSubmit }" ref="form">
             <b-form @submit.prevent="handleSubmit(onSubmit)">
               <b-row>
                 <b-form-group
                   class="col-md-6 mb-3"
-                  label="Name"
+                  label="Name*"
                   label-for="input-1"
                 >
-                  <ValidationProvider name="Name" rules="required" v-slot="{ errors }">
+                  <ValidationProvider ref="name" name="Name" rules="required|max:40" v-slot="{ errors }">
                     <b-form-input
                       v-model="form.name"
                       type="text"
@@ -34,10 +34,10 @@
                 </b-form-group>
                 <b-form-group
                   class="col-md-6 mb-3"
-                  label="Email"
+                  label="Email*"
                   label-for="input-1"
                 >
-                  <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
+                  <ValidationProvider ref="email" name="Email" rules="required|email" v-slot="{ errors }">
                     <b-form-input
                       v-model="form.email"
                       type="email"
@@ -52,7 +52,7 @@
                   label="Phone"
                   label-for="input-1"
                 >
-                  <ValidationProvider name="Phone" rules="required" v-slot="{ errors }">
+                  <ValidationProvider ref="mobile" name="Phone" rules="numeric|min:11|max:13" v-slot="{ errors }">
                     <b-form-input
                       v-model="form.mobile"
                       type="text"
@@ -62,19 +62,22 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group  label="Role" label-for="input-1" class="col-md-6">
-                  <ValidationProvider name="Role" rules="required" v-slot="{ errors }">
+                <b-form-group  label="Role*" label-for="input-1" class="col-md-6">
+                  <ValidationProvider ref="role" name="Role" rules="required" v-slot="{ errors }">
                     <b-form-select
                       v-model="form.role_id"
                       :options="roles"
                       id="inline-form-custom-select-pref1"
                     >
+                      <template #first>
+                        <b-form-select-option :value="null" disabled>-- Please select role --</b-form-select-option>
+                      </template>
                     </b-form-select>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-col md="12">
+                <b-col md="12" class="d-flex justify-content-end">
                   <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
                 </b-col>
               </b-row>
@@ -88,6 +91,9 @@
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "User",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),
@@ -117,11 +123,17 @@ export default {
       })
 
       if (data.status == "SUCCESS") {
+        alert(data.message)
         this.$router.push({ name: 'user-index' })
       } else {
-        // ada validation form
-
-        // jika tidak ada validation form, error global
+        if (data.data) {
+          this.$refs.name.applyResult({ errors: data.data.name ?? [] })
+          this.$refs.email.applyResult({ errors: data.data.email ?? [] })
+          this.$refs.mobile.applyResult({ errors: data.data.mobile ?? [] })
+          this.$refs.role.applyResult({ errors: data.data.role_id ?? [] })
+        } else {
+          alert(data.message)
+        }
       }
     },
     async getDetail() {

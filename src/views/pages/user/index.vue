@@ -15,17 +15,7 @@
     <b-card class="wrapper">
       <b-card-header>
         <b-row>
-          <b-col lg="3" class="mt-auto">
-            <b-form-group id="fieldset-1" label="" label-for="input-1">
-
-                <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                    <b-form-select size="sm" v-model="selected" :options="options"
-                        v-on:change="filterStatus()"></b-form-select>
-                </b-form-group>
-            </b-form-group>
-
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
+          <b-col lg="3" offset-lg="9" class="mt-auto">
             <router-link :to="{ name: 'user-create'}" class="btn btn-info btn-block btn-sm mb-3">
                 Tambah User
             </router-link>
@@ -33,7 +23,7 @@
         </b-row>
       </b-card-header>
 
-      <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected" :busy="loading" show-empty>
+      <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
           <template #empty="scope">
               Data not found or empty
           </template>
@@ -42,6 +32,14 @@
                   <b-spinner class="align-middle"></b-spinner>
                   <strong>Loading...</strong>
               </div>
+          </template>
+
+          <template #cell(mobile)="{ value }">
+            {{ value? value : '-' }}
+          </template>
+
+          <template #cell(created_at)="{ value }">
+            {{ value | luxon }}
           </template>
 
           <template #cell(action)="{ item }">
@@ -70,9 +68,13 @@
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "User",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),
+      loading: false,
       items: [],
       fields: [
         {
@@ -116,6 +118,7 @@ export default {
   },
   methods: {
     async getItems(page) {
+      this.loading = true
       page = page?? 1
       let { data } = await this.axios.get('user?page=' + page, {
         headers: { Authorization: 'Bearer ' + this.token }
@@ -125,6 +128,8 @@ export default {
       this.meta.total = data.meta.total
       this.meta.perPage = data.meta.per_page
       this.meta.currentPage = data.meta.current_page
+
+      this.loading = false
     }
   }
 }

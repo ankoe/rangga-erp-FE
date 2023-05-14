@@ -72,6 +72,9 @@
 import axios from 'axios'
 
 export default {
+  metaInfo: {
+    title: "Material Category",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),

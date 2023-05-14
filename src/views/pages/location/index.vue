@@ -33,7 +33,7 @@
         </b-row>
       </b-card-header>
 
-      <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected" :busy="loading" show-empty>
+      <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
           <template #empty="scope">
               Data not found or empty
           </template>
@@ -72,6 +72,9 @@
 import axios from 'axios'
 
 export default {
+  metaInfo: {
+    title: "Location",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),

@@ -20,7 +20,7 @@
             <p class="card-title m-0">Office</p>
 
             <div class="btn-group">
-              <b-button variant="primary">Add Role</b-button>
+              <b-button variant="primary">Add Role in Office</b-button>
             </div>
           </div>
           <b-row>
@@ -36,22 +36,14 @@
                 >
                   <b-card
                     class="mb-30 cursor-pointer"
-                    v-for="element in list1"
-                    :key="element.name"
+                    v-for="(office, index) in offices"
+                    :key="office.role.id"
                   >
                     <div class="d-flex justify-content-between">
-                      <h6 class="text-muted mb-1">{{ element.name }}</h6>
-                      <a href>
-                        <i class="nav-icon i-Pen-2"></i>
-                      </a>
-                    </div>
-                    <div
-                      class="ul-board--description d-flex justify-content-between mt-3"
-                    >
-                      <div class="ul-board--lDesc d-flex align-items-center">
-                        <i class="nav-icon i-Speach-Bubble-3 mr-1"></i>
-                        <span class="text-muted">7</span>
-                      </div>
+                      <h6 class="text-muted mb-1">{{ office.role.display_name }}</h6>
+                      <button type="button" class="btn-sm btn btn-danger" @click="onDeleteOffice(index)">
+                        <i class="nav-icon i-Close-Window"></i>
+                      </button>
                     </div>
                   </b-card>
                 </transition-group>
@@ -68,7 +60,7 @@
             <p class="card-title m-0">Procurement</p>
 
             <div class="btn-group">
-              <b-button variant="primary">Add Role</b-button>
+              <b-button variant="primary">Add Role in Procurement</b-button>
             </div>
           </div>
           <b-row>
@@ -84,22 +76,14 @@
                 >
                   <b-card
                     class="mb-30 cursor-pointer"
-                    v-for="element in list2"
-                    :key="element.name"
+                    v-for="(procurement, index) in procurements"
+                    :key="procurement.role.id"
                   >
                     <div class="d-flex justify-content-between">
-                      <h6 class="text-muted mb-1">{{ element.name }}</h6>
-                      <a href>
-                        <i class="nav-icon i-Pen-2"></i>
-                      </a>
-                    </div>
-                    <div
-                      class="ul-board--description d-flex justify-content-between mt-3"
-                    >
-                      <div class="ul-board--lDesc d-flex align-items-center">
-                        <i class="nav-icon i-Speach-Bubble-3 mr-1"></i>
-                        <span class="text-muted">7</span>
-                      </div>
+                      <h6 class="text-muted mb-1">{{ procurement.role.display_name }}</h6>
+                      <button type="button" class="btn-sm btn btn-danger" @click="onDeleteProcurement(index)">
+                        <i class="nav-icon i-Close-Window"></i>
+                      </button>
                     </div>
                   </b-card>
                 </transition-group>
@@ -119,7 +103,7 @@ import draggable from "vuedraggable"
 export default {
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
-    title: "Paging Table"
+    title: "Config - Approval"
   },
   display: "Transitions",
   order: 7,
@@ -128,34 +112,47 @@ export default {
   },
   data() {
     return {
-      list1: [
-        { name: "John", id: 1 },
-        { name: "Joao", id: 2 },
-        { name: "Jean", id: 3 },
-        { name: "Gerard", id: 4 }
-      ],
-      list2: [
-        { name: "John", id: 1 },
-        { name: "Joao", id: 2 },
-        { name: "Jean", id: 3 },
-        { name: "Gerard", id: 4 },
-        { name: "Juan", id: 5 },
-        { name: "Edgard", id: 6 },
-        { name: "Johnson", id: 7 }
-      ],
-      list3: [
-        { name: "John", id: 1 },
-        { name: "Joao", id: 2 },
-        { name: "Jean", id: 3 },
-        { name: "Gerard", id: 4 },
-        { name: "Juan", id: 5 },
-        { name: "Edgard", id: 6 }
-      ],
+      token: localStorage.getItem("token"),
+      roles: [],
+      offices: [],
+      procurements: [],
 
       drag: false
     };
   },
-  methods: {},
+  mounted() {
+    this.getItems()
+    this.getRoles()
+  },
+  methods: {
+    async getItems() {
+      let { data } = await this.axios.get('config-approval', {
+        headers: { Authorization: 'Bearer ' + this.token }
+      })
+
+      await data.data.forEach((approval) => {
+         if (approval.role.group == 'office') {
+          this.offices.push(approval)
+         } else {
+          this.procurements.push(approval)
+         }
+      })
+      // perlu disorting
+    },
+    async getRoles() {
+      let { data } = await this.axios.get('role/all', {
+        headers: { Authorization: 'Bearer ' + this.token }
+      })
+
+      this.roles = data.data
+    },
+    onDeleteOffice(index) {
+      this.offices.splice(index, 1)
+    },
+    onDeleteProcurement(index) {
+      this.procurements.splice(index, 1)
+    },
+  },
   computed: {
     dragOptions() {
       return {

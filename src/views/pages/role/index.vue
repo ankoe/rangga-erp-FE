@@ -15,17 +15,7 @@
     <b-card class="wrapper">
       <b-card-header>
         <b-row>
-          <b-col lg="3" class="mt-auto">
-            <b-form-group id="fieldset-1" label="" label-for="input-1">
-
-                <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                    <b-form-select size="sm" v-model="selected" :options="options"
-                        v-on:change="filterStatus()"></b-form-select>
-                </b-form-group>
-            </b-form-group>
-
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
+          <b-col lg="3" offset-lg="9" class="mt-auto">
             <router-link :to="{ name: 'role-create'}" class="btn btn-info btn-block btn-sm mb-3">
                 Tambah Role
             </router-link>
@@ -45,9 +35,10 @@
           </template>
 
           <template #cell(action)="{ item }">
-            <router-link :to="{ name: 'role-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
+            <router-link v-if="!item.is_default" :to="{ name: 'role-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
               Edit
             </router-link>
+            <span v-else class="font-italic small text-secondary">Cant be modify</span>
           </template>
       </b-table>
 
@@ -72,8 +63,7 @@
 <script>
 export default {
   metaInfo: {
-    // if no subcomponents specify a metaInfo.title, this title will be used
-    title: "Paging Table"
+    title: "Role"
   },
   data() {
     return {
