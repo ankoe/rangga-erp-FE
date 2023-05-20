@@ -25,11 +25,6 @@
             </b-form-group>
 
           </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link :to="{ name: 'purchase-request-create'}" class="btn btn-info btn-block btn-sm mb-3">
-                Tambah Purchase Request
-            </router-link>
-          </b-col>
         </b-row>
       </b-card-header>
 
@@ -42,10 +37,6 @@
                   <b-spinner class="align-middle"></b-spinner>
                   <strong>Loading...</strong>
               </div>
-          </template>
-
-          <template #cell(created_at)="{ value }">
-            {{ value | luxon }}
           </template>
           <template #cell(updated_at)="{ value }">
             {{ value | luxon }}
@@ -83,20 +74,12 @@ export default {
       items: [],
       fields: [
         {
-          key: 'code',
-          label: 'Number',
-        },
-        {
           key: 'user.name',
           label: 'User',
         },
         {
           key: 'status.description',
           label: 'Status',
-        },
-        {
-          key: 'created_at',
-          label: 'Created PR',
         },
         {
           key: 'updated_at',
@@ -120,7 +103,7 @@ export default {
   methods: {
     async getItems(page) {
       page = page?? 1
-      let { data } = await this.axios.get('purchase-request?page=' + page, {
+      let { data } = await this.axios.get('office/purchase-request?page=' + page, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
@@ -130,7 +113,7 @@ export default {
       this.meta.currentPage = data.meta.current_page
     },
     onRowSelected(items) {
-      this.$router.push({ name: 'purchase-request-detail', params: {id: items[0].id} })
+      this.$router.push({ name: 'office-purchase-request-detail', params: {id: items[0].id} })
     },
   }
 }

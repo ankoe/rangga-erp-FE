@@ -43,7 +43,7 @@
               </ValidationObserver>
 
               <div class="mt-3 text-center">
-                <router-link :to="{ name: 'forgot' }" tag="a" class="text-muted">
+                <router-link :to="{ name: 'password-forgot' }" tag="a" class="text-muted">
                   <u>Forgot Password?</u>
                 </router-link>
               </div>
@@ -60,7 +60,6 @@
               <router-link
                 :to="{ name: 'register' }"
                 class="btn btn-rounded btn-outline-primary btn-outline-email btn-block btn-icon-text"
-                href="signup.html"
               >
                 Create an account
               </router-link>
@@ -101,9 +100,10 @@ export default {
 
       if (data.status == "SUCCESS") {
         // sementara, harusnya lewat store
-        console.log('pl')
+        localStorage.setItem("name", data.data.name)
         localStorage.setItem("token", data.data.token)
-        this.$router.push('/dashboard')
+        localStorage.setItem("permissions", JSON.stringify(data.data.permissions))
+        this.$router.push({ name: 'dashboard' })
       } else {
         if (data.data) {
           this.$refs.email.applyResult({ errors: data.data.email ?? [] })

@@ -68,6 +68,14 @@
           @change="getItems"
         ></b-pagination>
       </div>
+      <div>
+        Aplikasi lama:<br>
+        <pre>
+          -- list user (search, hapus) (profile, name, last message)
+  -- chat + bisa upload, bisa preview kalau gambar, selain gambar berbentuk link
+
+        </pre>
+      </div>
     </b-card>
     
   </div>
@@ -83,12 +91,8 @@ export default {
       items: [],
       fields: [
         {
-          key: 'code',
-          label: 'Number',
-        },
-        {
           key: 'user.name',
-          label: 'User',
+          label: 'Username',
         },
         {
           key: 'status.description',

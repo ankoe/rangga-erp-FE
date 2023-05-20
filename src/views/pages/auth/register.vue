@@ -65,7 +65,7 @@
                   </b-form-group>
 
                   <b-form-group label="Password">
-                    <ValidationProvider ref="password" name="Pasword" rules="required"  vid="password" v-slot="{ errors }">
+                    <ValidationProvider ref="password" name="Pasword" rules="required" vid="password" v-slot="{ errors }">
                       <b-form-input
                         class="form-control form-control-rounded"
                         label="Password"
@@ -108,6 +108,12 @@
                   >Send</b-button>
                 </b-form>
               </ValidationObserver>
+
+              <div class="mt-3 text-center">
+                <router-link :to="{ name: 'activation-resend' }" tag="a" class="text-muted">
+                  <u>Resend Activation</u>
+                </router-link>
+              </div>
             </div>
           </b-col>
         </div>

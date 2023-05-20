@@ -1,22 +1,23 @@
 import BootstrapVue from "bootstrap-vue";
-// import vuePerfectScrollbar from "vue-perfect-scrollbar";
-// import VueTour from "vue-tour";
-// import SmartTable from "vuejs-smart-table";
-// import VueTagsInput from "@johmun/vue-tags-input";
-// import VueTheMask from "vue-the-mask";
-import Vuelidate from "vuelidate";
-// import VueFormWizard from "vue-form-wizard";
-import VueLazyload from "vue-lazyload";
-// import VCalendar from "v-calendar";
-import VueGoodTablePlugin from "vue-good-table";
-// import VueSlider from "vue-slider-component";
-import Meta from "vue-meta";
-import FlagIcon from "vue-flag-icon";
+// import vuePerfectScrollbar from "vue-perfect-scrollbar"
+// import VueTour from "vue-tour"
+// import SmartTable from "vuejs-smart-table"
+import VueTagsInput from "@johmun/vue-tags-input"
+// import VueTheMask from "vue-the-mask"
+import Vuelidate from "vuelidate"
+// import VueFormWizard from "vue-form-wizard"
+import VueLazyload from "vue-lazyload"
+// import VCalendar from "v-calendar"
+import VueGoodTablePlugin from "vue-good-table"
+// import VueSlider from "vue-slider-component"
+import Meta from "vue-meta"
+import FlagIcon from "vue-flag-icon"
+import VueSweetalert2 from 'vue-sweetalert2'
 
-import "@/assets/styles/sass/themes/lite-purple.scss";
+import "@/assets/styles/sass/themes/lite-purple.scss"
+import 'sweetalert2/dist/sweetalert2.min.css'
 // import "@/plugins/echarts";
-// import "@/plugins/apexChart.js";
-// import "@/plugins/sweetalert2.js";
+// import "@/plugins/apexChart.js"
 
 // locale.use(lang);
 
@@ -91,7 +92,7 @@ export default {
     // Vue.use(VueFormWizard);
 
     // tags input plugin
-    // Vue.use(VueTagsInput);
+    Vue.use(VueTagsInput);
 
     // smart table plugin
     // Vue.use(SmartTable);
@@ -111,6 +112,10 @@ export default {
     // });
 
     // Vue.use(VueTour);
+    Vue.use(VueSweetalert2, {
+      confirmButtonColor: '#41b882',
+      cancelButtonColor: '#ff7674'
+    })
 
     Vue.use(VueLazyload, {
       observer: true,

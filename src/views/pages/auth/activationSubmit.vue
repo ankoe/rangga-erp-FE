@@ -11,29 +11,13 @@
               <div class="auth-logo text-center mb-30">
                 <img :src="logo" alt="" />
               </div>
-              <h1 class="mb-3 text-18">Forgot Password</h1>
-              <ValidationObserver v-slot="{ handleSubmit }">
-                <form @submit.prevent="handleSubmit(onSubmit)">
-                  <div class="form-group">
-                    <label for="email">Email address</label>
-                    <ValidationProvider name="E-mail" rules="required|email" v-slot="{ errors }">
-                      <input
-                        id="email"
-                        class="form-control form-control-rounded"
-                        type="email"
-                      />
-                      <span class="text-danger small">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                  <button class="btn btn-primary btn-block btn-rounded mt-3">
-                    Reset Password
-                  </button>
-                </form>
-              </ValidationObserver>
-              <div class="mt-3 text-center">
-                <router-link to="signIn" tag="a" class="text-muted ">
-                  <u>Sign In</u>
-                </router-link>
+              <h1 class="mb-3 text-18 text-center">Activation Account</h1>
+              <div v-if="result != null" class="mt-3 text-center">
+                <div v-if="result" class="alert alert-success">successfully activated, continue to login</div>
+                <div v-else class="alert alert-danger">{{ message }}</div>
+              </div>
+              <div v-else class="mt-3 text-center text-info">
+                <p>Loading...</p>
               </div>
             </div>
           </div>
@@ -43,22 +27,12 @@
             :style="{ backgroundImage: 'url(' + formImage + ')' }"
           >
             <div class="pr-3 auth-right">
-              <a
+              <router-link
+                :to="{ name: 'login' }"
                 class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded"
-                href="signup.html"
               >
-                <i class="i-Mail-with-At-Sign"></i> Sign up with Email
-              </a>
-              <a
-                class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded"
-              >
-                <i class="i-Google-Plus"></i> Sign in with Google
-              </a>
-              <a
-                class="btn btn-outline-primary btn-outline-facebook btn-block btn-icon-text btn-rounded"
-              >
-                <i class="i-Facebook-2"></i> Sign in with Facebook
-              </a>
+                Login
+              </router-link>
             </div>
           </div>
         </div>
@@ -70,17 +44,37 @@
 export default {
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
-    title: "Forgot Password"
+    title: "Activation Account"
   },
   data() {
     return {
       bgImage: require("@/assets/images/photo-wide-4.jpg"),
       logo: require("@/assets/images/logo.png"),
-      formImage: require("@/assets/images/photo-long-3.jpg")
+      formImage: require("@/assets/images/photo-long-3.jpg"),
+      result: null,
+      message: null
     };
   },
+  mounted() {
+    if (this.$route.query.token) {
+      this.onSubmit()
+    } else {
+      this.$router.push({ name: 'login' })
+    }
+  },
   methods: {
-    async onSubmit() {}
+    async onSubmit() {
+      let { data } = await this.axios.get('auth/activation/submit',
+        { params: { token: this.$route.query.token }
+      })
+
+      if (data.status == 'SUCCESS') {
+        this.result = true
+      } else {
+        this.result = false
+        this.message = data.message
+      }
+    }
   }
 };
 </script>

@@ -16,12 +16,18 @@
       <b-card-header>
         <b-row>
           <b-col lg="3" class="mt-auto">
-            <h5>Total : {{ $n(total, 'currency', 'id-ID') }}</h5>
+            <b-form-group id="fieldset-1" label="" label-for="input-1">
+
+                <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
+                    <b-form-select size="sm" v-model="selected" :options="options"
+                        v-on:change="filterStatus()"></b-form-select>
+                </b-form-group>
+            </b-form-group>
 
           </b-col>
           <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link v-if="isEditable" :to="{ name: 'purchase-request-item-create', params: { id } }" class="btn btn-info btn-block btn-sm mb-3">
-                Tambah Item
+            <router-link :to="{ name: 'purchase-request-create'}" class="btn btn-info btn-block btn-sm mb-3">
+                Tambah Purchase Request
             </router-link>
           </b-col>
         </b-row>
@@ -55,33 +61,98 @@
           </template>
 
           <template #cell(action)="{ item }">
-            <div v-if="isEditable">
-              <router-link :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }" class="btn btn-info btn-sm">
-                Edit
-              </router-link>
-              <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-danger btn-sm">
-                Delete
-              </router-link>
-            </div>
-            <span v-else class="font-italic small text-secondary">
-              Can't modify
-            </span>
+            <router-link :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }" class="btn btn-info btn-sm">
+              Edit
+            </router-link>
+            <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-danger btn-sm">
+              Delete
+            </router-link>
           </template>
       </b-table>
 
-      <b-card-footer>
-        <b-row class="mt-4">
-          <b-col md="8">
-            <h4>Status: {{ status ? status.description : '' }}</h4>
-          </b-col>
-          <b-col v-if="isEditable" class="text-right">
-            <button type="button" class="btn btn-success btn-sm mb-3" @click="submitPR">
-                Submit PR
-            </button>
-          </b-col>
-        </b-row>
-      </b-card-footer>
+      <div>
+        Aplikasi lama:<br>
+        <pre>
+          -> jika status draft
+   -- no pr item
+   -- material number
+   -- material name
+   -- material desc
+   -- UOM
+   -- QTY
+   -- proposed supplier
+   -- unit price
+   -- unit total
+   -- delivery location
+   -- expected delivery date
+   -- action (send rfq, gambar 1&2)
+ -> jika status draft (RFQ)
+   -- material number
+   -- material name
+   -- material desc
+   -- UOM
+   -- QTY
+   -- proposed supplier
+   -- unit price
+   -- unit total
+   -- delivery location
+   -- expected delivery date
+   -- sudah mengirim RFQ
+   + tombol proses
+   + list supplier (nama, tombol delete)
+   + tombol tambah supplier muncul modal (gambar 3)
+ -> jika status waiting response supplier
+   -- material number
+   -- material name
+   -- material desc
+   -- UOM
+   -- QTY
+   -- proposed supplier
+   -- unit price
+   -- unit total
+   -- delivery location
+   -- expected delivery date
+   + tombol send rfq
+ -> jika status waiting for approval
+   -- material number
+   -- material name
+   -- material desc
+   -- UOM
+   -- QTY
+   -- proposed supplier
+   -- unit price
+   -- unit total
+   -- delivery location
+   -- expected delivery date
+   + tombol send rfq
+ -> jika status RFQ Response (evaluation)
+   -- material number
+   -- material name
+   -- material desc
+   -- UOM
+   -- QTY
+   -- proposed supplier
+   -- unit price
+   -- unit total
+   -- delivery location
+   -- expected delivery date
+   + tombol send rfq (gambar 4)
+ -> jika status approve
+   -- material number
+   -- material name
+   -- material desc
+   -- UOM
+   -- QTY
+   -- proposed supplier
+   -- unit price
+   -- unit total
+   -- delivery location
+   -- delivery date
+   + tombol lihat dokumen
+   + kirim dokumen ke winning vendor
 
+        </pre>
+      </div>
     </b-card>
 
   </div>
@@ -95,9 +166,6 @@ export default {
     return {
       token: localStorage.getItem("token"),
       items: [],
-      id: null,
-      total: null,
-      status: null,
       fields: [
         {
           key: 'material.number',
@@ -153,33 +221,13 @@ export default {
   mounted() {
     this.getItems()
   },
-  computed: {
-    isEditable() {
-      return this.status ? ['draft', 'reject office approval'].includes(this.status.title) : false
-    }
-  },
   methods: {
     async getItems() {
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id, {
+      let { data } = await this.axios.get('procurement/purchase-order/' + this.$route.params.id, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
-      this.id = data.data.id
-      this.total = data.data.total
-      this.status = data.data.status
       this.items = data.data.items
-    },
-    async submitPR() {
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id + '/apply', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
-
-      if (data.status == "SUCCESS") {
-        alert(data.message)
-        this.getItems()
-      } else {
-        alert(data.message)
-      }
     }
   }
 }

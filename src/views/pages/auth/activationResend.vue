@@ -6,17 +6,17 @@
     <div class="auth-content">
       <div class="card o-hidden">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <div class="p-4">
               <div class="auth-logo text-center mb-30">
                 <img :src="logo" alt="" />
               </div>
-              <h1 class="mb-3 text-18">Forgot Password</h1>
-              <ValidationObserver v-slot="{ handleSubmit }">
+              <h1 class="mb-3 text-18">Resend Activation</h1>
+              <ValidationObserver v-slot="{ handleSubmit }" ref="form">
                 <form @submit.prevent="handleSubmit(onSubmit)">
                   <div class="form-group">
                     <label for="email">Email address</label>
-                    <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
+                    <ValidationProvider name="Email" ref="email" rules="required|email" v-slot="{ errors }">
                       <input
                         id="email"
                         class="form-control form-control-rounded"
@@ -27,15 +27,10 @@
                     </ValidationProvider>
                   </div>
                   <button type="submit" class="btn btn-primary btn-block btn-rounded mt-3">
-                    Reset Password
+                    Request
                   </button>
                 </form>
               </ValidationObserver>
-              <div class="mt-3 text-center">
-                <router-link :to="{ name: 'login' }" tag="a" class="text-muted ">
-                  <u>Login</u>
-                </router-link>
-              </div>
             </div>
           </div>
           <div
@@ -48,7 +43,7 @@
                 :to="{ name: 'register' }"
                 class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded"
               >
-                Register
+                Create an account
               </router-link>
             </div>
           </div>
@@ -78,19 +73,25 @@ export default {
     async onSubmit() {
       this.submitted = true
 
-      let { data } = await this.axios.get('auth/password/forgot',
+      let { data } = await this.axios.get('auth/activation/resend',
         { params: { email: this.form.email }
       })
 
-      console.log(data, 'data')
-
       if (data.status == "SUCCESS") {
-        // sementara, harusnya lewat store
-        // this.$router.push('/dashboard')
-      } else {
-        // ada validation form
+        alert(data.message)
 
-        // jika tidak ada validation form, error global
+        this.form.email = null
+
+        this.$nextTick(() => this.$refs.form.reset() )
+      } else {
+        if (data.data) {
+          this.$refs.email.applyResult({ errors: data.data.email ?? [] })
+        } else {
+          alert(data.message)
+
+          this.form.email = null
+          this.$nextTick(() => this.$refs.form.reset() )
+        }
       }
 
       this.submitted = false

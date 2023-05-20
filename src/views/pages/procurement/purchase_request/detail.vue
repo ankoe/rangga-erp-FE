@@ -16,13 +16,14 @@
       <b-card-header>
         <b-row>
           <b-col lg="3" class="mt-auto">
-            <h5>Total : {{ $n(total, 'currency', 'id-ID') }}</h5>
+            <b-form-group id="fieldset-1" label="" label-for="input-1">
 
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link v-if="isEditable" :to="{ name: 'purchase-request-item-create', params: { id } }" class="btn btn-info btn-block btn-sm mb-3">
-                Tambah Item
-            </router-link>
+                <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
+                    <b-form-select size="sm" v-model="selected" :options="options"
+                        v-on:change="filterStatus()"></b-form-select>
+                </b-form-group>
+            </b-form-group>
+
           </b-col>
         </b-row>
       </b-card-header>
@@ -55,17 +56,14 @@
           </template>
 
           <template #cell(action)="{ item }">
-            <div v-if="isEditable">
-              <router-link :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }" class="btn btn-info btn-sm">
-                Edit
-              </router-link>
-              <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-danger btn-sm">
-                Delete
-              </router-link>
-            </div>
-            <span v-else class="font-italic small text-secondary">
-              Can't modify
-            </span>
+            <b-form-select
+              :options="['approve', 'reject']"
+              id="inline-form-custom-select-pref1"
+            >
+              <template #first>
+                <b-form-select-option :value="null" disabled>--</b-form-select-option>
+              </template>
+            </b-form-select>
           </template>
       </b-table>
 
@@ -74,9 +72,9 @@
           <b-col md="8">
             <h4>Status: {{ status ? status.description : '' }}</h4>
           </b-col>
-          <b-col v-if="isEditable" class="text-right">
-            <button type="button" class="btn btn-success btn-sm mb-3" @click="submitPR">
-                Submit PR
+          <b-col v-if="status && status.title == 'waiting procurement approval'" md="4" class=" text-right">
+            <button type="button" class="btn btn-success btn-sm mb-3" @click="onProceed">
+                Proceed
             </button>
           </b-col>
         </b-row>
@@ -95,9 +93,6 @@ export default {
     return {
       token: localStorage.getItem("token"),
       items: [],
-      id: null,
-      total: null,
-      status: null,
       fields: [
         {
           key: 'material.number',
@@ -153,14 +148,9 @@ export default {
   mounted() {
     this.getItems()
   },
-  computed: {
-    isEditable() {
-      return this.status ? ['draft', 'reject office approval'].includes(this.status.title) : false
-    }
-  },
   methods: {
     async getItems() {
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id, {
+      let { data } = await this.axios.get('procurement/purchase-request/' + this.$route.params.id, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
@@ -169,18 +159,22 @@ export default {
       this.status = data.data.status
       this.items = data.data.items
     },
-    async submitPR() {
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id + '/apply', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+    async onProceed() {
+      let { data } = await this.axios.post('procurement/purchase-request/' + this.$route.params.id + '/approval',
+        {
+          decision: 'approve'
+        },
+        {
+          headers: { Authorization: 'Bearer ' + this.token }
+        })
 
-      if (data.status == "SUCCESS") {
-        alert(data.message)
-        this.getItems()
-      } else {
-        alert(data.message)
-      }
-    }
+        if (data.status == "SUCCESS") {
+          alert(data.message)
+          this.getItems()
+        } else {
+          alert(data.message)
+        }
+    },
   }
 }
 </script>

@@ -10,7 +10,7 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Create'" :folder="'Material Category'" />
+    <breadcumb :page="'Create'" :folder="'Material'" />
 
     <b-row>
       <b-col md="12 mb-30">

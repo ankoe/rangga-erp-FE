@@ -10,13 +10,6 @@ Vue.use(Router);
 // create new router
 
 const routes = [
-  // {
-  //   path: "/",
-  //   name: "dashboard",
-  //   component: () => import("./views/app"), //webpackChunkName app
-  //   // beforeEnter: authenticate,
-  //   redirect: "/app/pages/blank",
-  // },
 
   {
     path: "/",
@@ -209,18 +202,6 @@ const routes = [
         component: () => import("./views/pages/purchase_request/item_edit")
       },
 
-      // rfq
-      {
-        path: "rfq",
-        name: "rfq-index",
-        component: () => import("./views/pages/rfq/index"),
-      },
-      {
-        path: "rfq/:id",
-        name: "rfq-detail",
-        component: () => import("./views/pages/rfq/detail"),
-      },
-
       // config
       {
         path: "config",
@@ -232,6 +213,93 @@ const routes = [
         path: "config/approval",
         name: "config-approval",
         component: () => import("./views/pages/config/approval"),
+      },
+
+
+      // office: purchase request
+      {
+        path: "office/purchase-request",
+        name: "office-purchase-request-index",
+        component: () => import("./views/pages/office/purchase_request/index"),
+      },
+      {
+        path: "office/purchase-request/:id",
+        name: "office-purchase-request-detail",
+        component: () => import("./views/pages/office/purchase_request/detail"),
+      },
+
+      // Procurement: purchase request
+      {
+        path: "procurement/purchase-request",
+        name: "procurement-purchase-request-index",
+        component: () => import("./views/pages/procurement/purchase_request/index"),
+      },
+      {
+        path: "procurement/purchase-request/:id",
+        name: "procurement-purchase-request-detail",
+        component: () => import("./views/pages/procurement/purchase_request/detail"),
+      },
+
+      // Procurement: request for quotation
+      {
+        path: "procurement/request-for-quotation",
+        name: "procurement-request-for-quotation-index",
+        component: () => import("./views/pages/procurement/request_for_quotation/index"),
+      },
+      {
+        path: "procurement/request-for-quotation/:id",
+        name: "procurement-request-for-quotation-detail",
+        component: () => import("./views/pages/procurement/request_for_quotation/detail"),
+      },
+
+      // Procurement: Purchase Order
+      {
+        path: "procurement/purchase-order",
+        name: "procurement-purchase-order-index",
+        component: () => import("./views/pages/procurement/purchase_order/index"),
+      },
+      {
+        path: "procurement/purchase-order/:id",
+        name: "procurement-purchase-order-detail",
+        component: () => import("./views/pages/procurement/purchase_order/detail"),
+      },
+
+      // Procurement: message
+      {
+        path: "procurement/mesage",
+        name: "procurement-message-index",
+        component: () => import("./views/pages/procurement/message"),
+      },
+
+      // Vendor: Offer
+      {
+        path: "supplier/offer",
+        name: "supplier-offer-index",
+        component: () => import("./views/pages/supplier/offer/index"),
+      },
+      {
+        path: "supplier/offer/:id",
+        name: "supplier-offer-detail",
+        component: () => import("./views/pages/supplier/offer/detail"),
+      },
+
+      // Vendor: Supplier Winner
+      {
+        path: "supplier/winner",
+        name: "supplier-winner-index",
+        component: () => import("./views/pages/supplier/supplier_winner/index"),
+      },
+      {
+        path: "supplier/winner/:id",
+        name: "supplier-winner-detail",
+        component: () => import("./views/pages/supplier/supplier_winner/detail"),
+      },
+
+      // Vendor: message
+      {
+        path: "supplier/mesage",
+        name: "supplier-message-index",
+        component: () => import("./views/pages/supplier/message"),
       },
 
     ]

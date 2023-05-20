@@ -33,7 +33,7 @@
         </b-row>
       </b-card-header>
 
-      <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected" :busy="loading" show-empty>
+      <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
           <template #empty="scope">
               Data not found or empty
           </template>
@@ -44,108 +44,118 @@
               </div>
           </template>
 
+          <template #cell(price)="{ value }">
+            {{ $n(value, 'currency', 'id-ID') }}
+          </template>
+
+          <template #cell(expected_at)="{ value }">
+            {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
+          </template>
+
+          <template #cell(file)="{ value, item }">
+            <a :href="value" target="_blank">File</a>
+          </template>
+
+          <template #cell(total)="{ value }">
+            {{ $n(value, 'currency', 'id-ID') }}
+          </template>
+
           <template #cell(action)="{ item }">
-            <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
-              Edit
-            </router-link>
+            <vue-tags-input
+      v-model="tag"
+      :tags="tags"
+      :add-only-from-autocomplete="true"
+      :autocomplete-items="vendors"
+    />
           </template>
       </b-table>
-
-      <div class="mt-3">
-        <b-pagination
-          v-model="meta.currentPage"
-          :total-rows="meta.total"
-          :per-page="meta.perPage"
-          first-text="First"
-          prev-text="Prev"
-          next-text="Next"
-          last-text="Last"
-          align="right"
-          @change="getItems"
-        ></b-pagination>
-      </div>
     </b-card>
 
   </div>
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "Purchase Request",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),
       items: [],
       fields: [
         {
-          key: 'name',
+          key: 'material.number',
           label: 'Material Number',
         },
         {
-          key: 'status',
+          key: 'material.name',
           label: 'Material Name',
         },
         {
-          key: 'created_at',
+          key: 'material.description',
           label: 'Material Desc',
         },
         {
-          key: 'updated_at',
+          key: 'material.uom',
           label: 'UOM',
         },
         {
-          key: 'updated_at',
+          key: 'quantity',
           label: 'QTY',
         },
         {
-          key: 'updated_at',
+          key: 'vendor.name',
           label: 'Proposed Supplier',
         },
         {
-          key: 'updated_at',
+          key: 'price',
           label: 'Unit Price',
         },
         {
-          key: 'updated_at',
+          key: 'branch.name',
           label: 'Delivery Location',
         },
         {
-          key: 'updated_at',
+          key: 'expected_at',
           label: 'Expected Date',
         },
         {
-          key: 'updated_at',
+          key: 'file',
           label: 'File',
         },
         {
-          key: 'updated_at',
+          key: 'total',
           label: 'Total Value',
         },
         {
           key: 'action',
-          label: 'Action',
+          label: 'Vendor',
         },
       ],
-      meta: {
-        total: 0,
-        perPage: 10,
-        currentPage: 1,
-      }
+      vendors: [],
+      tag: '',
+      tags: [],
     }
   },
   mounted() {
     this.getItems()
+    this.getVendors()
   },
   methods: {
-    async getItems(page) {
-      page = page?? 1
-      let { data } = await this.axios.get('purchase-request?page=' + page, {
+    async getItems() {
+      let { data } = await this.axios.get('procurement/request-for-quotation/' + this.$route.params.id, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
-      this.items = data.data
-      this.meta.total = data.meta.total
-      this.meta.perPage = data.meta.per_page
-      this.meta.currentPage = data.meta.current_page
-    }
+      this.items = data.data.items
+    },
+    async getVendors() {
+      let { data } = await this.axios.get('vendor/all', {
+        headers: { Authorization: 'Bearer ' + this.token }
+      })
+
+      this.vendors = data.data
+    },
   }
 }
 </script>

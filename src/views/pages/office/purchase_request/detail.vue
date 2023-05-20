@@ -10,7 +10,7 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="'Purchase Request'" :folder="'Approval'" />
 
     <b-card class="wrapper">
       <b-card-header>
@@ -18,11 +18,6 @@
           <b-col lg="3" class="mt-auto">
             <h5>Total : {{ $n(total, 'currency', 'id-ID') }}</h5>
 
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link v-if="isEditable" :to="{ name: 'purchase-request-item-create', params: { id } }" class="btn btn-info btn-block btn-sm mb-3">
-                Tambah Item
-            </router-link>
           </b-col>
         </b-row>
       </b-card-header>
@@ -53,20 +48,6 @@
           <template #cell(total)="{ value }">
             {{ $n(value, 'currency', 'id-ID') }}
           </template>
-
-          <template #cell(action)="{ item }">
-            <div v-if="isEditable">
-              <router-link :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }" class="btn btn-info btn-sm">
-                Edit
-              </router-link>
-              <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-danger btn-sm">
-                Delete
-              </router-link>
-            </div>
-            <span v-else class="font-italic small text-secondary">
-              Can't modify
-            </span>
-          </template>
       </b-table>
 
       <b-card-footer>
@@ -74,9 +55,12 @@
           <b-col md="8">
             <h4>Status: {{ status ? status.description : '' }}</h4>
           </b-col>
-          <b-col v-if="isEditable" class="text-right">
-            <button type="button" class="btn btn-success btn-sm mb-3" @click="submitPR">
-                Submit PR
+          <b-col v-if="status && status.title == 'waiting office approval'" md="4" class=" text-right">
+            <button type="button" class="btn btn-success btn-sm mb-3" @click="onApprove">
+                Approve
+            </button>
+            <button type="button" class="ml-2 text-white btn btn-danger btn-sm mb-3" @click="onReject">
+                Reject
             </button>
           </b-col>
         </b-row>
@@ -143,24 +127,15 @@ export default {
           key: 'total',
           label: 'Total Value',
         },
-        {
-          key: 'action',
-          label: 'Action',
-        },
       ],
     }
   },
   mounted() {
     this.getItems()
   },
-  computed: {
-    isEditable() {
-      return this.status ? ['draft', 'reject office approval'].includes(this.status.title) : false
-    }
-  },
   methods: {
     async getItems() {
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id, {
+      let { data } = await this.axios.get('office/purchase-request/' + this.$route.params.id, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
@@ -169,16 +144,52 @@ export default {
       this.status = data.data.status
       this.items = data.data.items
     },
-    async submitPR() {
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id + '/apply', {
-        headers: { Authorization: 'Bearer ' + this.token }
+    async onApprove() {
+      let { data } = await this.axios.post('office/purchase-request/' + this.$route.params.id + '/approval',
+        {
+          decision: 'approve'
+        },
+        {
+          headers: { Authorization: 'Bearer ' + this.token }
+        })
+
+        if (data.status == "SUCCESS") {
+          alert(data.message)
+          this.getItems()
+        } else {
+          alert(data.message)
+        }
+    },
+    async onReject() {
+      const { value: remarks } = await this.$swal({
+        title: 'Reject Request Purchase',
+        input: 'textarea',
+        inputPlaceholder: 'Remarks',
+        inputAttributes: {
+          'aria-label': 'Remarks'
+        },
+        showCancelButton: true,
+        inputValidator: (result) => {
+          return !result && 'You need input remarks'
+        }
       })
 
-      if (data.status == "SUCCESS") {
-        alert(data.message)
-        this.getItems()
-      } else {
-        alert(data.message)
+      if (remarks) {
+        let { data } = await this.axios.post('office/purchase-request/' + this.$route.params.id + '/approval',
+        {
+          decision: 'reject',
+          remarks
+        },
+        {
+          headers: { Authorization: 'Bearer ' + this.token }
+        })
+
+        if (data.status == "SUCCESS") {
+          alert(data.message)
+          this.getItems()
+        } else {
+          alert(data.message)
+        }
       }
     }
   }

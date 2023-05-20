@@ -10,7 +10,7 @@
 </style>
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="'List'" :folder="'Purchase Request'" />
 
     <b-card class="wrapper">
       <b-card-header>
@@ -24,11 +24,6 @@
                 </b-form-group>
             </b-form-group>
 
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link :to="{ name: 'purchase-request-create'}" class="btn btn-info btn-block btn-sm mb-3">
-                Tambah Purchase Request
-            </router-link>
           </b-col>
         </b-row>
       </b-card-header>
@@ -44,10 +39,14 @@
               </div>
           </template>
 
-          <template #cell(action)="{ item }">
-            <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
-              Edit
-            </router-link>
+          <template #cell(created_at)="{ value }">
+            {{ value | luxon }}
+          </template>
+          <template #cell(updated_at)="{ value }">
+            {{ value | luxon }}
+          </template>
+          <template #cell(total)="{ value }">
+            {{ $n(value, 'currency', 'id-ID') }}
           </template>
       </b-table>
 
@@ -64,23 +63,34 @@
           @change="getItems"
         ></b-pagination>
       </div>
+
+      <div>
+        Aplikasi lama:<br>
+        <pre>
+       -- username
+  -- status
+        </pre>
+      </div>
     </b-card>
     
   </div>
 </template>
 <script>
 export default {
+  metaInfo: {
+    title: "Purchase Request",
+  },
   data() {
     return {
       token: localStorage.getItem("token"),
       items: [],
       fields: [
         {
-          key: 'name',
+          key: 'user.name',
           label: 'Username',
         },
         {
-          key: 'status',
+          key: 'status.description',
           label: 'Status',
         },
         {
@@ -92,7 +102,7 @@ export default {
           label: 'updated PR',
         },
         {
-          key: 'action',
+          key: 'total',
           label: 'Total Value',
         },
       ],
@@ -109,7 +119,7 @@ export default {
   methods: {
     async getItems(page) {
       page = page?? 1
-      let { data } = await this.axios.get('purchase-request?page=' + page, {
+      let { data } = await this.axios.get('procurement/purchase-order?page=' + page, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
@@ -117,7 +127,10 @@ export default {
       this.meta.total = data.meta.total
       this.meta.perPage = data.meta.per_page
       this.meta.currentPage = data.meta.current_page
-    }
+    },
+    onRowSelected(items) {
+      this.$router.push({ name: 'procurement-purchase-order-detail', params: {id: items[0].id} })
+    },
   }
 }
 </script>
