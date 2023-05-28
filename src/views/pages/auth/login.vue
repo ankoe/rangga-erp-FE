@@ -13,11 +13,7 @@
                 <b-form @submit.prevent="handleSubmit(onSubmit)">
                   <b-form-group label="Email Address" class="text-12">
                     <ValidationProvider ref="email" name="Email" rules="required|email" v-slot="{ errors }">
-                      <b-form-input
-                        class="form-control-rounded"
-                        type="email"
-                        v-model="form.email"
-                      />
+                      <b-form-input class="form-control-rounded" type="email" v-model="form.email" />
                       <span class="text-danger small">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </b-form-group>
@@ -29,13 +25,8 @@
                     </ValidationProvider>
                   </b-form-group>
 
-                  <b-button
-                    type="submit"
-                    tag="button"
-                    class="btn-rounded btn-block mt-2"
-                    variant="primary mt-2"
-                    :disabled="loading"
-                  >Send</b-button>
+                  <b-button type="submit" tag="button" class="btn-rounded btn-block mt-2" variant="primary mt-2"
+                    :disabled="loading">Send</b-button>
                   <div v-once class="typo__p" v-if="loading">
                     <div class="spinner sm spinner-primary mt-3"></div>
                   </div>
@@ -50,17 +41,11 @@
             </div>
           </div>
 
-          <b-col
-            md="6"
-            class="text-center"
-            style="backgroundSize: cover;"
-            :style="{ backgroundImage: 'url(' + signInImage + ')' }"
-          >
+          <b-col md="6" class="text-center" style="backgroundSize: cover;"
+            :style="{ backgroundImage: 'url(' + signInImage + ')' }">
             <div class="pr-3 auth-right">
-              <router-link
-                :to="{ name: 'register' }"
-                class="btn btn-rounded btn-outline-primary btn-outline-email btn-block btn-icon-text"
-              >
+              <router-link :to="{ name: 'register' }"
+                class="btn btn-rounded btn-outline-primary btn-outline-email btn-block btn-icon-text">
                 Create an account
               </router-link>
             </div>
@@ -71,6 +56,8 @@
   </div>
 </template>
 <script>
+import { mapActions } from "vuex"
+
 export default {
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
@@ -90,6 +77,9 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      "syncRate",
+    ]),
     async onSubmit() {
       this.loading = true
 
@@ -103,6 +93,7 @@ export default {
         localStorage.setItem("name", data.data.name)
         localStorage.setItem("token", data.data.token)
         localStorage.setItem("permissions", JSON.stringify(data.data.permissions))
+        this.syncRate()
         this.$router.push({ name: 'dashboard' })
       } else {
         if (data.data) {

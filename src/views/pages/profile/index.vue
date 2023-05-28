@@ -1,13 +1,3 @@
-<style  scoped>
-.app-footer {
-    margin-top: 2rem;
-    background: #eee;
-    padding: 1.25rem;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: none;
-}
-</style>
 <template>
   <div class="main-content">
     <breadcumb :page="'Detail'" :folder="'Profile'" />
@@ -17,11 +7,11 @@
       <b-card-header>
         <b-row>
           <b-col lg="3" offset-lg="9" class="mt-auto">
-            <router-link :to="{ name: 'profile-password'}" class="btn btn-info btn-sm mb-3">
-                Change Password
+            <router-link :to="{ name: 'profile-password' }" class="btn btn-info btn-sm mb-3">
+              Change Password
             </router-link>
-            <router-link :to="{ name: 'profile-edit'}" class="btn btn-info btn-sm mb-3 ml-lg-2">
-                Profile Edit
+            <router-link :to="{ name: 'profile-edit' }" class="btn btn-info btn-sm mb-3 ml-lg-2">
+              Profile Edit
             </router-link>
           </b-col>
         </b-row>
@@ -56,7 +46,7 @@
       </table>
     </b-card>
 
-    
+
   </div>
 </template>
 <script>

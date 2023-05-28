@@ -1,13 +1,3 @@
-<style  scoped>
-.app-footer {
-    margin-top: 2rem;
-    background: #eee;
-    padding: 1.25rem;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: none;
-}
-</style>
 <template>
   <div class="main-content">
     <breadcumb :page="'List'" :folder="'Role'" />
@@ -16,44 +6,36 @@
       <b-card-header>
         <b-row>
           <b-col lg="3" offset-lg="9" class="mt-auto">
-            <router-link :to="{ name: 'role-create'}" class="btn btn-info btn-block btn-sm mb-3">
-                Tambah Role
+            <router-link :to="{ name: 'role-create' }" class="btn btn-info btn-block btn-sm mb-3">
+              Tambah Role
             </router-link>
           </b-col>
         </b-row>
       </b-card-header>
 
-      <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected" :busy="loading" show-empty>
-          <template #empty="scope">
-              Data not found or empty
-          </template>
-          <template #table-busy>
-              <div class="text-center text-danger my-2">
-                  <b-spinner class="align-middle"></b-spinner>
-                  <strong>Loading...</strong>
-              </div>
-          </template>
+      <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
+        <template #empty="scope">
+          Data not found or empty
+        </template>
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
 
-          <template #cell(action)="{ item }">
-            <router-link v-if="!item.is_default" :to="{ name: 'role-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
-              Edit
-            </router-link>
-            <span v-else class="font-italic small text-secondary">Cant be modify</span>
-          </template>
+        <template #cell(action)="{ item }">
+          <router-link v-if="!item.is_default" :to="{ name: 'role-edit', params: { id: item.id } }"
+            class="btn btn-info btn-sm">
+            Edit
+          </router-link>
+          <span v-else class="font-italic small text-secondary">Cant be modify</span>
+        </template>
       </b-table>
 
       <div class="mt-3">
-        <b-pagination
-          v-model="meta.currentPage"
-          :total-rows="meta.total"
-          :per-page="meta.perPage"
-          first-text="First"
-          prev-text="Prev"
-          next-text="Next"
-          last-text="Last"
-          align="right"
-          @change="getItems"
-        ></b-pagination>
+        <b-pagination v-model="meta.currentPage" :total-rows="meta.total" :per-page="meta.perPage" first-text="First"
+          prev-text="Prev" next-text="Next" last-text="Last" align="right" @change="getItems"></b-pagination>
       </div>
     </b-card>
 
@@ -68,6 +50,7 @@ export default {
   data() {
     return {
       token: localStorage.getItem("token"),
+      loading: false,
       items: [],
       fields: [
         {
@@ -95,7 +78,7 @@ export default {
   },
   methods: {
     async getItems(page) {
-      page = page?? 1
+      page = page ?? 1
       let { data } = await this.axios.get('role?page=' + page, {
         headers: { Authorization: 'Bearer ' + this.token }
       })

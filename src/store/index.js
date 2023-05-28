@@ -4,10 +4,11 @@ import largeSidebar from "./modules/largeSidebar";
 import compactSidebar from "./modules/compactSidebar";
 // import chat from "./modules/chat";
 import config from "./modules/config";
-import authData from "./modules/authData";
+// import authData from "./modules/authData";
 // import invoice from "./modules/invoice";
 // import cart from "./modules/cart";
-import verticalSidebar from "./modules/verticalSidebar";
+import verticalSidebar from "./modules/verticalSidebar"
+import exchange from "./modules/exchange"
 // import scrumboard from "./modules/scrumboard";
 
 // Load Vuex
@@ -25,5 +26,6 @@ export default new Vuex.Store({
     // cart,
     verticalSidebar,
     // scrumboard
+    exchange
   },
 });

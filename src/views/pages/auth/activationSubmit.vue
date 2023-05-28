@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="auth-layout-wrap"
-    :style="{ backgroundImage: 'url(' + bgImage + ')' }"
-  >
+  <div class="auth-layout-wrap" :style="{ backgroundImage: 'url(' + bgImage + ')' }">
     <div class="auth-content">
       <div class="card o-hidden">
         <div class="row">
@@ -21,16 +18,11 @@
               </div>
             </div>
           </div>
-          <div
-            class="col-md-6 text-center "
-            style="background-size: cover"
-            :style="{ backgroundImage: 'url(' + formImage + ')' }"
-          >
+          <div class="col-md-6 text-center " style="background-size: cover"
+            :style="{ backgroundImage: 'url(' + formImage + ')' }">
             <div class="pr-3 auth-right">
-              <router-link
-                :to="{ name: 'login' }"
-                class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded"
-              >
+              <router-link :to="{ name: 'login' }"
+                class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded">
                 Login
               </router-link>
             </div>
@@ -65,8 +57,9 @@ export default {
   methods: {
     async onSubmit() {
       let { data } = await this.axios.get('auth/activation/submit',
-        { params: { token: this.$route.query.token }
-      })
+        {
+          params: { token: this.$route.query.token }
+        })
 
       if (data.status == 'SUCCESS') {
         this.result = true

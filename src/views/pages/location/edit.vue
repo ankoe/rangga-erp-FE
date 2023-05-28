@@ -1,13 +1,3 @@
-<style  scoped>
-.app-footer {
-    margin-top: 2rem;
-    background: #eee;
-    padding: 1.25rem;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: none;
-}
-</style>
 <template>
   <div class="main-content">
     <breadcumb :page="'Edit'" :folder="'Location'" />
@@ -18,62 +8,30 @@
           <ValidationObserver v-slot="{ handleSubmit }" ref="form">
             <b-form @submit.prevent="handleSubmit(onSubmit)">
               <b-row>
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Name*"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Name*" label-for="input-1">
                   <ValidationProvider ref="name" name="Name" rules="required|max:100" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.name"
-                      type="text"
-                      placeholder="Name"
-                    ></b-form-input>
+                    <b-form-input v-model="form.name" type="text" placeholder="Name"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Address"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Address" label-for="input-1">
                   <ValidationProvider ref="address" name="Address" rules="max:100" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.address"
-                      type="text"
-                      placeholder="Address"
-                    ></b-form-input>
+                    <b-form-input v-model="form.address" type="text" placeholder="Address"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Email"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Email" label-for="input-1">
                   <ValidationProvider ref="email" name="Email" rules="email|max:40" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.email"
-                      type="email"
-                      placeholder="Email"
-                    ></b-form-input>
+                    <b-form-input v-model="form.email" type="email" placeholder="Email"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Phone"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Phone" label-for="input-1">
                   <ValidationProvider ref="mobile" name="Phone" rules="numeric|min:11|max:13" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.mobile"
-                      type="text"
-                      placeholder="Phone"
-                    ></b-form-input>
+                    <b-form-input v-model="form.mobile" type="text" placeholder="Phone"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>

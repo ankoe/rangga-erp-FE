@@ -1,13 +1,3 @@
-<style  scoped>
-.app-footer {
-    margin-top: 2rem;
-    background: #eee;
-    padding: 1.25rem;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: none;
-}
-</style>
 <template>
   <div class="main-content">
     <breadcumb :page="'Change Password'" :folder="'Profile'" />
@@ -18,42 +8,25 @@
           <ValidationObserver v-slot="{ handleSubmit }" ref="form">
             <b-form @submit.prevent="handleSubmit(onSubmit)">
               <b-row>
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Current Password*"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Current Password*" label-for="input-1">
                   <ValidationProvider ref="current" name="Current Password" rules="required" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.password_current"
-                      type="password"
-                      placeholder="Current Password"
-                    ></b-form-input>
+                    <b-form-input v-model="form.password_current" type="password"
+                      placeholder="Current Password"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="New Password*"
-                  label-for="input-1"
-                >
-                  <ValidationProvider ref="password" name="New Password" rules="required" vid="password" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.password"
-                      type="password"
-                      placeholder="New Password"
-                    ></b-form-input>
+                <b-form-group class="col-md-6 mb-3" label="New Password*" label-for="input-1">
+                  <ValidationProvider ref="password" name="New Password" rules="required" vid="password"
+                    v-slot="{ errors }">
+                    <b-form-input v-model="form.password" type="password" placeholder="New Password"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group  label="Repeat Password*" label-for="input-1" class="col-md-6">
-                  <ValidationProvider ref="repassword" name="Repeat Password" rules="required|confirmed:password" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.repassword"
-                      type="password"
-                      placeholder="Repeat Password"
-                    ></b-form-input>
+                <b-form-group label="Repeat Password*" label-for="input-1" class="col-md-6">
+                  <ValidationProvider ref="repassword" name="Repeat Password" rules="required|confirmed:password"
+                    v-slot="{ errors }">
+                    <b-form-input v-model="form.repassword" type="password" placeholder="Repeat Password"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
@@ -68,7 +41,7 @@
       </b-col>
     </b-row>
 
-    
+
   </div>
 </template>
 <script>

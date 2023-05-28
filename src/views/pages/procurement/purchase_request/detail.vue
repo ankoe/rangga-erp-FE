@@ -1,13 +1,3 @@
-<style  scoped>
-.app-footer {
-    margin-top: 2rem;
-    background: #eee;
-    padding: 1.25rem;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: none;
-}
-</style>
 <template>
   <div class="main-content">
     <breadcumb :page="'Blank'" :folder="'Pages'" />
@@ -18,10 +8,10 @@
           <b-col lg="3" class="mt-auto">
             <b-form-group id="fieldset-1" label="" label-for="input-1">
 
-                <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                    <b-form-select size="sm" v-model="selected" :options="options"
-                        v-on:change="filterStatus()"></b-form-select>
-                </b-form-group>
+              <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
+                <b-form-select size="sm" v-model="selected" :options="options"
+                  v-on:change="filterStatus()"></b-form-select>
+              </b-form-group>
             </b-form-group>
 
           </b-col>
@@ -29,42 +19,39 @@
       </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
-          <template #empty="scope">
-              Data not found or empty
-          </template>
-          <template #table-busy>
-              <div class="text-center text-danger my-2">
-                  <b-spinner class="align-middle"></b-spinner>
-                  <strong>Loading...</strong>
-              </div>
-          </template>
+        <template #empty="scope">
+          Data not found or empty
+        </template>
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
 
-          <template #cell(price)="{ value }">
-            {{ $n(value, 'currency', 'id-ID') }}
-          </template>
+        <template #cell(price)="{ value }">
+          {{ $n(exchange(value), 'currency', getExchangeLocale) }}
+        </template>
 
-          <template #cell(expected_at)="{ value }">
-            {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
-          </template>
+        <template #cell(expected_at)="{ value }">
+          {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
+        </template>
 
-          <template #cell(file)="{ value, item }">
-            <a :href="value" target="_blank">File</a>
-          </template>
+        <template #cell(file)="{ value }">
+          <a :href="value" target="_blank">File</a>
+        </template>
 
-          <template #cell(total)="{ value }">
-            {{ $n(value, 'currency', 'id-ID') }}
-          </template>
+        <template #cell(total)="{ value }">
+          {{ $n(exchange(value), 'currency', getExchangeLocale) }}
+        </template>
 
-          <template #cell(action)="{ item }">
-            <b-form-select
-              :options="['approve', 'reject']"
-              id="inline-form-custom-select-pref1"
-            >
-              <template #first>
-                <b-form-select-option :value="null" disabled>--</b-form-select-option>
-              </template>
-            </b-form-select>
-          </template>
+        <template #cell(action)="{ item }">
+          <b-form-select :options="['approve', 'reject']" id="inline-form-custom-select-pref1">
+            <template #first>
+              <b-form-select-option :value="null" disabled>--</b-form-select-option>
+            </template>
+          </b-form-select>
+        </template>
       </b-table>
 
       <b-card-footer>
@@ -74,7 +61,7 @@
           </b-col>
           <b-col v-if="status && status.title == 'waiting procurement approval'" md="4" class=" text-right">
             <button type="button" class="btn btn-success btn-sm mb-3" @click="onProceed">
-                Proceed
+              Proceed
             </button>
           </b-col>
         </b-row>
@@ -84,7 +71,11 @@
 
   </div>
 </template>
+
+
 <script>
+import { mapGetters } from "vuex"
+
 export default {
   metaInfo: {
     title: "Purchase Request",
@@ -148,7 +139,13 @@ export default {
   mounted() {
     this.getItems()
   },
+  computed: {
+    ...mapGetters(["getRate", "getExchangeLocale"])
+  },
   methods: {
+    exchange(value) {
+      return value * this.getRate
+    },
     async getItems() {
       let { data } = await this.axios.get('procurement/purchase-request/' + this.$route.params.id, {
         headers: { Authorization: 'Bearer ' + this.token }
@@ -168,12 +165,12 @@ export default {
           headers: { Authorization: 'Bearer ' + this.token }
         })
 
-        if (data.status == "SUCCESS") {
-          alert(data.message)
-          this.getItems()
-        } else {
-          alert(data.message)
-        }
+      if (data.status == "SUCCESS") {
+        alert(data.message)
+        this.getItems()
+      } else {
+        alert(data.message)
+      }
     },
   }
 }

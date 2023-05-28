@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="auth-layout-wrap"
-    :style="{ backgroundImage: 'url(' + bgImage + ')' }"
-  >
+  <div class="auth-layout-wrap" :style="{ backgroundImage: 'url(' + bgImage + ')' }">
     <div class="auth-content">
       <div class="card o-hidden">
         <div class="row">
@@ -17,12 +14,7 @@
                   <div class="form-group">
                     <label for="email">Email address</label>
                     <ValidationProvider name="Email" ref="email" rules="required|email" v-slot="{ errors }">
-                      <input
-                        id="email"
-                        class="form-control form-control-rounded"
-                        type="email"
-                        v-model="form.email"
-                      />
+                      <input id="email" class="form-control form-control-rounded" type="email" v-model="form.email" />
                       <span class="text-danger small">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -33,16 +25,11 @@
               </ValidationObserver>
             </div>
           </div>
-          <div
-            class="col-md-6 text-center "
-            style="background-size: cover"
-            :style="{ backgroundImage: 'url(' + formImage + ')' }"
-          >
+          <div class="col-md-6 text-center " style="background-size: cover"
+            :style="{ backgroundImage: 'url(' + formImage + ')' }">
             <div class="pr-3 auth-right">
-              <router-link
-                :to="{ name: 'register' }"
-                class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded"
-              >
+              <router-link :to="{ name: 'register' }"
+                class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded">
                 Create an account
               </router-link>
             </div>
@@ -74,15 +61,16 @@ export default {
       this.submitted = true
 
       let { data } = await this.axios.get('auth/activation/resend',
-        { params: { email: this.form.email }
-      })
+        {
+          params: { email: this.form.email }
+        })
 
       if (data.status == "SUCCESS") {
         alert(data.message)
 
         this.form.email = null
 
-        this.$nextTick(() => this.$refs.form.reset() )
+        this.$nextTick(() => this.$refs.form.reset())
       } else {
         if (data.data) {
           this.$refs.email.applyResult({ errors: data.data.email ?? [] })
@@ -90,7 +78,7 @@ export default {
           alert(data.message)
 
           this.form.email = null
-          this.$nextTick(() => this.$refs.form.reset() )
+          this.$nextTick(() => this.$refs.form.reset())
         }
       }
 

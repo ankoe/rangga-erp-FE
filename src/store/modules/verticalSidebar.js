@@ -43,7 +43,6 @@ const mutations = {
         .isSidebarCompact;
       state.verticalCompact.isItemName = !state.verticalCompact.isItemName;
     }
-    console.log('test');
   },
   REMOVE_SIDEBAR_COMPACT(state, data) {
     if (state.verticalCompact.isSidebarCompact == true) {

@@ -12,26 +12,10 @@
 
     <div class="d-flex align-items-center">
       <!-- Mega menu -->
-      <div
-        :class="{ show: isMegaMenuOpen }"
-        class="dropdown mega-menu d-none d-md-block"
-        v-on-clickaway="closeMegaMenu"
-      >
-        <a
-          href="#"
-          class="btn text-muted dropdown-toggle mr-3"
-          id="dropdownMegaMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          @click="toggleMegaMenu"
-          >Mega Menu</a
-        >
-        <div
-          class="dropdown-menu text-left"
-          :class="{ show: isMegaMenuOpen }"
-          aria-labelledby="dropdownMenuButton"
-        >
+      <div :class="{ show: isMegaMenuOpen }" class="dropdown mega-menu d-none d-md-block" v-on-clickaway="closeMegaMenu">
+        <a href="#" class="btn text-muted dropdown-toggle mr-3" id="dropdownMegaMenuButton" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" @click="toggleMegaMenu">Mega Menu</a>
+        <div class="dropdown-menu text-left" :class="{ show: isMegaMenuOpen }" aria-labelledby="dropdownMenuButton">
           <div class="row m-0">
             <div class="col-md-4 p-4 text-left bg-img">
               <h2 class="title">
@@ -51,9 +35,7 @@
               </button>
             </div>
             <div class="col-md-4 p-4 text-left">
-              <p
-                class="text-primary text--cap border-bottom-primary d-inline-block"
-              >
+              <p class="text-primary text--cap border-bottom-primary d-inline-block">
                 Features
               </p>
               <div class="menu-icon-grid w-auto p-0">
@@ -68,9 +50,7 @@
               </div>
             </div>
             <div class="col-md-4 p-4 text-left">
-              <p
-                class="text-primary text--cap border-bottom-primary d-inline-block"
-              >
+              <p class="text-primary text--cap border-bottom-primary d-inline-block">
                 Components
               </p>
               <ul class="links">
@@ -126,29 +106,14 @@
 
     <div class="header-part-right">
       <!-- Full screen toggle -->
-      <i
-        class="i-Full-Screen header-icon d-none d-sm-inline-block"
-        @click="handleFullScreen"
-      ></i>
+      <i class="i-Full-Screen header-icon d-none d-sm-inline-block" @click="handleFullScreen"></i>
       <!-- Grid menu Dropdown -->
       <div class="dropdown">
-        <b-dropdown
-          id="dropdown"
-          text="Dropdown Button"
-          class="m-md-2"
-          toggle-class="text-decoration-none"
-          no-caret
-          variant="link"
-        >
+        <b-dropdown id="dropdown" text="Dropdown Button" class="m-md-2" toggle-class="text-decoration-none" no-caret
+          variant="link">
           <template slot="button-content">
-            <i
-              class="i-Safe-Box text-muted header-icon"
-              role="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            ></i>
+            <i class="i-Safe-Box text-muted header-icon" role="button" id="dropdownMenuButton" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false"></i>
           </template>
           <div class="menu-icon-grid">
             <a href="#"> <i class="i-Shop-4"></i> Home </a>
@@ -162,24 +127,15 @@
       </div>
       <!-- Notificaiton -->
       <div class="dropdown">
-        <b-dropdown
-          id="dropdown-1"
-          text="Dropdown Button"
-          class="m-md-2 badge-top-container"
-          toggle-class="text-decoration-none"
-          no-caret
-          variant="link"
-        >
+        <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-md-2 badge-top-container"
+          toggle-class="text-decoration-none" no-caret variant="link">
           <template slot="button-content">
             <span class="badge badge-primary">3</span>
             <i class="i-Bell text-muted header-icon"></i>
           </template>
           <!-- Notification dropdown -->
-          <vue-perfect-scrollbar
-            :settings="{ suppressScrollX: true, wheelPropagation: false }"
-            ref="myData"
-            class="dropdown-menu-right rtl-ps-none notification-dropdown  ps scroll"
-          >
+          <vue-perfect-scrollbar :settings="{ suppressScrollX: true, wheelPropagation: false }" ref="myData"
+            class="dropdown-menu-right rtl-ps-none notification-dropdown  ps scroll">
             <!-- <div class="dropdown-menu-right rtl-ps-none notification-dropdown"> -->
             <div class="dropdown-item d-flex">
               <div class="notification-icon">
@@ -220,9 +176,7 @@
                   <span>Product out of stock</span>
                   <!-- <span class="badge badge-pill badge-danger ml-1 mr-1">3</span> -->
                   <span class="flex-grow-1"></span>
-                  <span class="text-small text-muted ml-auto"
-                    >10 hours ago</span
-                  >
+                  <span class="text-small text-muted ml-auto">10 hours ago</span>
                 </p>
                 <p class="text-small text-muted m-0">
                   Headphone E67, R98, XL90, Q77
@@ -238,9 +192,7 @@
                   <span>Server Up!</span>
                   <!-- <span class="badge badge-pill badge-success ml-1 mr-1">3</span> -->
                   <span class="flex-grow-1"></span>
-                  <span class="text-small text-muted ml-auto"
-                    >14 hours ago</span
-                  >
+                  <span class="text-small text-muted ml-auto">14 hours ago</span>
                 </p>
                 <p class="text-small text-muted m-0">
                   Server rebooted successfully
@@ -255,23 +207,11 @@
 
       <!-- User avatar dropdown -->
       <div class="dropdown">
-        <b-dropdown
-          id="dropdown-1"
-          text="Dropdown Button"
-          class="m-md-2 user col align-self-end"
-          toggle-class="text-decoration-none"
-          no-caret
-          variant="link"
-        >
+        <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-md-2 user col align-self-end"
+          toggle-class="text-decoration-none" no-caret variant="link">
           <template slot="button-content">
-            <img
-              src="@/assets/images/faces/1.jpg"
-              id="userDropdown"
-              alt
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            />
+            <img src="@/assets/images/faces/1.jpg" id="userDropdown" alt data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false" />
           </template>
 
           <div class="dropdown-menu-right" aria-labelledby="userDropdown">
@@ -280,17 +220,12 @@
             </div>
             <a class="dropdown-item">Account settings</a>
             <a class="dropdown-item">Billing history</a>
-            <a class="dropdown-item" href="#" @click.prevent="logoutUser"
-              >Sign out</a
-            >
+            <a class="dropdown-item" href="#" @click.prevent="logoutUser">Sign out</a>
           </div>
         </b-dropdown>
       </div>
     </div>
-    <search-component
-      :isSearchOpen.sync="isSearchOpen"
-      @closeSearch="toggleSearch"
-    ></search-component>
+    <search-component :isSearchOpen.sync="isSearchOpen" @closeSearch="toggleSearch"></search-component>
   </div>
 
   <!-- header top menu end -->
@@ -340,7 +275,7 @@ export default {
       Util.toggleFullScreen();
     },
     closeMegaMenu() {
-      this.isMegaMenuOpen =false;
+      this.isMegaMenuOpen = false;
       // console.log(this.isMouseOnMegaMenu);
       // if (!this.isMouseOnMegaMenu) {
       //   this.isMegaMenuOpen = !this.isMegaMenuOpen;
@@ -353,7 +288,7 @@ export default {
       this.isSearchOpen = !this.isSearchOpen;
     },
 
-    compactSideBarToggle(el) {
+    compactSideBarToggle() {
       // console.log("test");
       if (this.getCompactSideBarToggleProperties.isSideNavOpen && isMobile) {
         this.changeCompactSidebarProperties();

@@ -1,13 +1,3 @@
-<style  scoped>
-.app-footer {
-    margin-top: 2rem;
-    background: #eee;
-    padding: 1.25rem;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: none;
-}
-</style>
 <template>
   <div class="main-content">
     <breadcumb :page="'Edit'" :folder="'User'" />
@@ -18,57 +8,28 @@
           <ValidationObserver v-slot="{ handleSubmit }" ref="form">
             <b-form @submit.prevent="handleSubmit(onSubmit)">
               <b-row>
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Name*"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Name*" label-for="input-1">
                   <ValidationProvider ref="name" name="Name" rules="required|max:40" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.name"
-                      type="text"
-                      placeholder="Name"
-                    ></b-form-input>
+                    <b-form-input v-model="form.name" type="text" placeholder="Name"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Email*"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Email*" label-for="input-1">
                   <ValidationProvider ref="email" name="Email" rules="required|email" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.email"
-                      type="email"
-                      readonly
-                      placeholder="Email"
-                    ></b-form-input>
+                    <b-form-input v-model="form.email" type="email" readonly placeholder="Email"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group
-                  class="col-md-6 mb-3"
-                  label="Phone"
-                  label-for="input-1"
-                >
+                <b-form-group class="col-md-6 mb-3" label="Phone" label-for="input-1">
                   <ValidationProvider ref="mobile" name="Phone" rules="numeric|min:11|max:13" v-slot="{ errors }">
-                    <b-form-input
-                      v-model="form.mobile"
-                      type="text"
-                      placeholder="Phone"
-                    ></b-form-input>
+                    <b-form-input v-model="form.mobile" type="text" placeholder="Phone"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group  label="Role*" label-for="input-1" class="col-md-6">
+                <b-form-group label="Role*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="role" name="Role" rules="required" v-slot="{ errors }">
-                    <b-form-select
-                      v-model="form.role_id"
-                      :options="roles"
-                      id="inline-form-custom-select-pref1"
-                    >
+                    <b-form-select v-model="form.role_id" :options="roles" id="inline-form-custom-select-pref1">
                       <template #first>
                         <b-form-select-option :value="null" disabled>-- Please select role --</b-form-select-option>
                       </template>
@@ -117,7 +78,7 @@ export default {
         email: this.form.email,
         mobile: this.form.mobile,
         role_id: this.form.role_id,
-        is_active: this.form.is_active? 'true' : 'false',
+        is_active: this.form.is_active ? 'true' : 'false',
       }, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
