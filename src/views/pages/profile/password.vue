@@ -48,7 +48,6 @@
 export default {
   data() {
     return {
-      token: localStorage.getItem("token"),
       form: {
         password_current: null,
         password: null,
@@ -62,8 +61,6 @@ export default {
         password_current: this.form.password_current,
         password: this.form.password,
         password_confirmation: this.form.repassword,
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {

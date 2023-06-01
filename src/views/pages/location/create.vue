@@ -55,8 +55,6 @@ export default {
   },
   data() {
     return {
-
-      token: localStorage.getItem("token"),
       form: {
         name: null,
         address: null,
@@ -72,8 +70,6 @@ export default {
         address: this.form.address,
         email: this.form.email,
         mobile: this.form.mobile,
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {

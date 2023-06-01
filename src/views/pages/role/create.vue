@@ -49,7 +49,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       form: {
         name: null,
         group: null
@@ -62,8 +61,6 @@ export default {
       let { data } = await this.axios.post('role', {
         name: this.form.name,
         group: this.form.group
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {

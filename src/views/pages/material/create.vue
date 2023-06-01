@@ -82,7 +82,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       form: {
         material_category_id: null,
         name: null,
@@ -108,8 +107,6 @@ export default {
         uom: this.form.uom,
         price: this.form.price,
         stock: this.form.stock,
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {
@@ -130,9 +127,7 @@ export default {
       }
     },
     async getMaterialCategories() {
-      let { data } = await this.axios.get('material-category', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('material-category')
 
       this.materialCategories = data.data.map(materialCategory => {
         return { value: materialCategory.id, text: materialCategory.name }

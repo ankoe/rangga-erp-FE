@@ -36,7 +36,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       form: {
         name: null
       }
@@ -46,8 +45,6 @@ export default {
     async onSubmit() {
       let { data } = await this.axios.post('material-category', {
         name: this.form.name
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {

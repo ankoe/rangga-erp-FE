@@ -123,7 +123,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       materials: [],
       vendors: [],
       locations: [],
@@ -175,9 +174,7 @@ export default {
   },
   methods: {
     async getItem() {
-      let { data } = await this.axios.get('purchase-request-item/' + this.$route.params.item, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('purchase-request-item/' + this.$route.params.item)
 
       if (data.status == "SUCCESS") {
         this.form.material_id = data.data.material.id
@@ -194,23 +191,17 @@ export default {
       }
     },
     async getMaterials() {
-      let { data } = await this.axios.get('material/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('material/all')
 
       this.materials = data.data
     },
     async getVendors() {
-      let { data } = await this.axios.get('vendor/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('vendor/all')
 
       this.vendors = data.data
     },
     async getLocations() {
-      let { data } = await this.axios.get('branch/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('branch/all')
 
       this.locations = data.data
     },
@@ -224,7 +215,7 @@ export default {
     async onSubmit() {
       let formData = new FormData()
 
-      formData.append("purchase_request_id", purchaseRequest.id)
+      formData.append("purchase_request_id", this.$route.params.id)
       formData.append("material_id", this.form.material_id)
       formData.append("price", this.form.material_price)
       formData.append("description", this.form.material_description)
@@ -234,9 +225,7 @@ export default {
       formData.append("expected_at", this.form.expected_date)
       formData.append("file", this.form.file)
 
-      let { data } = await this.axios.put('purchase-request-item/' + this.$route.params.item, formData, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.put('purchase-request-item/' + this.$route.params.item, formData)
 
       if (data.status == "SUCCESS") {
         alert(data.message)

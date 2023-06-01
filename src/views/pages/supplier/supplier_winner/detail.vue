@@ -24,7 +24,7 @@
       </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -66,81 +66,81 @@
         Aplikasi lama:<br>
         <pre>
 
-               -- material number
-               -- material name
-               -- material desc
-               -- UOM
-               -- QTY
-               -- delivery location
-               -- expected delivery date
-               -- action (?)
-               + tombol chat
-             -> jika status draft (RFQ)
-               -- material number
-               -- material name
-               -- material desc
-               -- UOM
-               -- QTY
-               -- proposed supplier
-               -- unit price
-               -- unit total
-               -- delivery location
-               -- expected delivery date
-               -- sudah mengirim RFQ
-               + tombol proses
-               + list supplier (nama, tombol delete)
-               + tombol tambah supplier muncul modal (gambar 3)
-             -> jika status waiting response supplier
-               -- material number
-               -- material name
-               -- material desc
-               -- UOM
-               -- QTY
-               -- proposed supplier
-               -- unit price
-               -- unit total
-               -- delivery location
-               -- expected delivery date
-               + tombol send rfq
-             -> jika status waiting for approval
-               -- material number
-               -- material name
-               -- material desc
-               -- UOM
-               -- QTY
-               -- proposed supplier
-               -- unit price
-               -- unit total
-               -- delivery location
-               -- expected delivery date
-               + tombol send rfq
-             -> jika status RFQ Response (evaluation)
-               -- material number
-               -- material name
-               -- material desc
-               -- UOM
-               -- QTY
-               -- proposed supplier
-               -- unit price
-               -- unit total
-               -- delivery location
-               -- expected delivery date
-               + tombol send rfq (gambar 4)
-             -> jika status approve
-               -- material number
-               -- material name
-               -- material desc
-               -- UOM
-               -- QTY
-               -- proposed supplier
-               -- unit price
-               -- unit total
-               -- delivery location
-               -- delivery date
-               + tombol lihat dokumen
-               + kirim dokumen ke winning vendor
+                     -- material number
+                     -- material name
+                     -- material desc
+                     -- UOM
+                     -- QTY
+                     -- delivery location
+                     -- expected delivery date
+                     -- action (?)
+                     + tombol chat
+                   -> jika status draft (RFQ)
+                     -- material number
+                     -- material name
+                     -- material desc
+                     -- UOM
+                     -- QTY
+                     -- proposed supplier
+                     -- unit price
+                     -- unit total
+                     -- delivery location
+                     -- expected delivery date
+                     -- sudah mengirim RFQ
+                     + tombol proses
+                     + list supplier (nama, tombol delete)
+                     + tombol tambah supplier muncul modal (gambar 3)
+                   -> jika status waiting response supplier
+                     -- material number
+                     -- material name
+                     -- material desc
+                     -- UOM
+                     -- QTY
+                     -- proposed supplier
+                     -- unit price
+                     -- unit total
+                     -- delivery location
+                     -- expected delivery date
+                     + tombol send rfq
+                   -> jika status waiting for approval
+                     -- material number
+                     -- material name
+                     -- material desc
+                     -- UOM
+                     -- QTY
+                     -- proposed supplier
+                     -- unit price
+                     -- unit total
+                     -- delivery location
+                     -- expected delivery date
+                     + tombol send rfq
+                   -> jika status RFQ Response (evaluation)
+                     -- material number
+                     -- material name
+                     -- material desc
+                     -- UOM
+                     -- QTY
+                     -- proposed supplier
+                     -- unit price
+                     -- unit total
+                     -- delivery location
+                     -- expected delivery date
+                     + tombol send rfq (gambar 4)
+                   -> jika status approve
+                     -- material number
+                     -- material name
+                     -- material desc
+                     -- UOM
+                     -- QTY
+                     -- proposed supplier
+                     -- unit price
+                     -- unit total
+                     -- delivery location
+                     -- delivery date
+                     + tombol lihat dokumen
+                     + kirim dokumen ke winning vendor
 
-                    </pre>
+                          </pre>
       </div>
     </b-card>
 
@@ -157,7 +157,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       items: [],
       fields: [
         {
@@ -222,9 +221,7 @@ export default {
       return value * this.getRate
     },
     async getItems() {
-      let { data } = await this.axios.get('office/purchase-request/' + this.$route.params.id, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('office/purchase-request/' + this.$route.params.id)
 
       this.items = data.data.items
     }

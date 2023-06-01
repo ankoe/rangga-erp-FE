@@ -9,6 +9,7 @@ import config from "./modules/config";
 // import cart from "./modules/cart";
 import verticalSidebar from "./modules/verticalSidebar"
 import exchange from "./modules/exchange"
+import auth from "./modules/auth"
 // import scrumboard from "./modules/scrumboard";
 
 // Load Vuex
@@ -26,6 +27,7 @@ export default new Vuex.Store({
     // cart,
     verticalSidebar,
     // scrumboard
-    exchange
+    exchange,
+    auth
   },
-});
+})

@@ -20,7 +20,7 @@
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected"
         :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -45,14 +45,6 @@
         <b-pagination v-model="meta.currentPage" :total-rows="meta.total" :per-page="meta.perPage" first-text="First"
           prev-text="Prev" next-text="Next" last-text="Last" align="right" @change="getItems"></b-pagination>
       </div>
-
-      <div>
-        Aplikasi lama:<br>
-        <pre>
-                 -- username
-            -- status
-                  </pre>
-      </div>
     </b-card>
 
   </div>
@@ -68,7 +60,7 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
+      loading: false,
       filter: {
         selected: null,
         options: [],
@@ -114,15 +106,16 @@ export default {
       return value * this.getRate
     },
     async getItems(page) {
+      this.loading = true
       page = page ?? 1
-      let { data } = await this.axios.get('procurement/purchase-order?page=' + page, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('procurement/purchase-order?page=' + page)
 
       this.items = data.data
       this.meta.total = data.meta.total
       this.meta.perPage = data.meta.per_page
       this.meta.currentPage = data.meta.current_page
+
+      this.loading = false
     },
     onRowSelected(items) {
       this.$router.push({ name: 'procurement-purchase-order-detail', params: { id: items[0].id } })

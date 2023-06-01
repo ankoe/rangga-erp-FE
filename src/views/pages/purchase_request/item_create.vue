@@ -124,7 +124,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       materials: [],
       vendors: [],
       locations: [],
@@ -175,23 +174,17 @@ export default {
   },
   methods: {
     async getMaterials() {
-      let { data } = await this.axios.get('material/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('material/all')
 
       this.materials = data.data
     },
     async getVendors() {
-      let { data } = await this.axios.get('vendor/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('vendor/all')
 
       this.vendors = data.data
     },
     async getLocations() {
-      let { data } = await this.axios.get('branch/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('branch/all')
 
       this.locations = data.data
     },
@@ -215,9 +208,7 @@ export default {
       formData.append("expected_at", this.form.expected_date)
       formData.append("file", this.form.file)
 
-      let { data } = await this.axios.post('purchase-request-item', formData, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.post('purchase-request-item', formData)
 
       if (data.status == "SUCCESS") {
         alert(data.message)
@@ -236,11 +227,6 @@ export default {
           alert(data.message)
         }
       }
-    },
-    async onSubmit() {
-      let purchaseRequest = await this.storePurchaseRequest()
-
-      this.storePurchaseRequestItem(purchaseRequest)
     }
   }
 }

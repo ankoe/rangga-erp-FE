@@ -53,7 +53,6 @@
 export default {
   data() {
     return {
-      token: localStorage.getItem("token"),
       name: null,
       email: null,
       mobile: null,
@@ -67,11 +66,7 @@ export default {
   },
   methods: {
     async getDetail() {
-      let { data } = await this.axios.get('profile', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
-
-      console.log(data)
+      let { data } = await this.axios.get('profile')
 
       if (data.status == "SUCCESS") {
         this.name = data.data.name

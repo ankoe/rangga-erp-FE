@@ -33,7 +33,8 @@
             <vue-perfect-scrollbar :settings="{ suppressScrollX: true, wheelPropagation: false }" ref="myData"
               class="dropdown-menu-right rtl-ps-none notification-dropdown ps scroll">
               <!-- <div class="dropdown-menu-right rtl-ps-none notification-dropdown"> -->
-              <div v-for="(notification, index) in notifications" :key="index" class="dropdown-item d-flex" @click="onClickNotification(notification)">
+              <div v-for="(notification, index) in notifications" :key="index" class="dropdown-item d-flex"
+                @click="onClickNotification(notification)">
                 <div class="notification-icon">
                   <i class="i-Speach-Bubble-6 text-primary mr-1"></i>
                 </div>
@@ -42,7 +43,12 @@
                     <span>{{ notification.title }}</span>
                     <!-- <span class="badge badge-pill badge-primary ml-1 mr-1">new</span> -->
                     <span class="flex-grow-1"></span>
-                    <span class="text-small text-muted ml-auto">{{ notification.created_at | luxon({ output: { format: "relative" } }) }}</span>
+                    <span class="text-small text-muted ml-auto">{{ notification.created_at | luxon({
+                      output: {
+                        format:
+                          "relative"
+                      }
+                    }) }}</span>
                   </p>
                   <p class="text-small text-muted m-0">{{ notification.message }}</p>
                 </div>
@@ -154,7 +160,7 @@ export default {
       this.notificationCount = data.data
     },
     async setRead(id) {
-      let { data } = await this.axios.get('notification/read/' + id, {
+      await this.axios.get('notification/read/' + id, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
 
@@ -168,7 +174,7 @@ export default {
     onClickNotification(notification) {
       // this.setRead(notification.route_param.id)
       // dropdown di false
-      this.$router.push({ name: notification.route, params: { id: notification.route_param.id?? '' } })
+      this.$router.push({ name: notification.route, params: { id: notification.route_param.id ?? '' } })
     },
     logoutUser() {
       if (localStorage.length > 0) localStorage.clear()

@@ -19,7 +19,7 @@
       </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -46,11 +46,15 @@
         </template>
 
         <template #cell(action)="{ item }">
-          <b-form-select :options="['approve', 'reject']" id="inline-form-custom-select-pref1">
+          <b-form-select v-if="status && status.title == 'waiting procurement approval'" :options="['approve', 'reject']"
+            v-model="item.decision" id="inline-form-custom-select-pref1">
             <template #first>
               <b-form-select-option :value="null" disabled>--</b-form-select-option>
             </template>
           </b-form-select>
+          <span v-else class="text-center">
+            -
+          </span>
         </template>
       </b-table>
 
@@ -82,8 +86,10 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
+      loading: false,
       items: [],
+      approves: [],
+      rejects: [],
       fields: [
         {
           key: 'material.number',
@@ -132,6 +138,7 @@ export default {
         {
           key: 'action',
           label: 'Action',
+          tdClass: 'text-center'
         },
       ],
     }
@@ -147,22 +154,34 @@ export default {
       return value * this.getRate
     },
     async getItems() {
-      let { data } = await this.axios.get('procurement/purchase-request/' + this.$route.params.id, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      this.loading = true
+      let { data } = await this.axios.get('procurement/purchase-request/' + this.$route.params.id)
 
       this.id = data.data.id
       this.total = data.data.total
       this.status = data.data.status
       this.items = data.data.items
+
+      this.loading = false
     },
     async onProceed() {
+      console.log(this.items, 'this.item')
+      this.approves = []
+      this.rejects = []
+      this.items.forEach(item => {
+        if (!item.decision) {
+          alert('All items must choose!')
+          return
+        } else {
+          if (item.decision == 'approve') this.approves.push(item.id)
+          else this.rejects.push(item.id)
+        }
+      })
+
       let { data } = await this.axios.post('procurement/purchase-request/' + this.$route.params.id + '/approval',
         {
-          decision: 'approve'
-        },
-        {
-          headers: { Authorization: 'Bearer ' + this.token }
+          approve: this.approves,
+          reject: this.rejects,
         })
 
       if (data.status == "SUCCESS") {

@@ -79,28 +79,28 @@ export default {
   methods: {
     ...mapActions([
       "syncRate",
+      "login"
     ]),
     async onSubmit() {
       this.loading = true
 
-      let { data } = await this.axios.post('auth/login', {
+      let response = await this.login({
         email: this.form.email,
         password: this.form.password
       })
 
-      if (data.status == "SUCCESS") {
+      if (response.data.status == "SUCCESS") {
         // sementara, harusnya lewat store
-        localStorage.setItem("name", data.data.name)
-        localStorage.setItem("token", data.data.token)
-        localStorage.setItem("permissions", JSON.stringify(data.data.permissions))
+        localStorage.setItem("name", response.data.data.name)
+        localStorage.setItem("permissions", JSON.stringify(response.data.data.permissions))
         this.syncRate()
         this.$router.push({ name: 'dashboard' })
       } else {
-        if (data.data) {
-          this.$refs.email.applyResult({ errors: data.data.email ?? [] })
-          this.$refs.password.applyResult({ errors: data.data.password ?? [] })
+        if (response.data.data) {
+          this.$refs.email.applyResult({ errors: response.data.data.email ?? [] })
+          this.$refs.password.applyResult({ errors: response.data.data.password ?? [] })
         } else {
-          alert(data.message)
+          alert(response.data.message)
         }
 
         this.form.password = null

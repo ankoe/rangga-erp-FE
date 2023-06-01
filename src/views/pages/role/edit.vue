@@ -35,6 +35,7 @@
 
   </div>
 </template>
+
 <script>
 export default {
   metaInfo: {
@@ -42,7 +43,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       form: {
         name: null,
         group: null
@@ -58,8 +58,6 @@ export default {
       let { data } = await this.axios.put('role/' + this.$route.params.id, {
         name: this.form.name,
         group: this.form.group
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {
@@ -75,9 +73,7 @@ export default {
       }
     },
     async getDetail() {
-      let { data } = await this.axios.get('role/' + this.$route.params.id, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('role/' + this.$route.params.id)
 
       if (data.status == "SUCCESS") {
         this.form.name = data.data.display_name

@@ -24,7 +24,7 @@
       </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -42,7 +42,7 @@
           {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
         </template>
 
-        <template #cell(file)="{ value, item }">
+        <template #cell(file)="{ value }">
           <a :href="value" target="_blank">File</a>
         </template>
 
@@ -50,7 +50,7 @@
           {{ $n(exchange(value), 'currency', getExchangeLocale) }}
         </template>
 
-        <template #cell(action)="{ item }">
+        <template #cell(action)>
           <vue-tags-input v-model="tag" :tags="tags" :add-only-from-autocomplete="true" :autocomplete-items="vendors" />
         </template>
       </b-table>
@@ -67,7 +67,7 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
+      loading: false,
       items: [],
       fields: [
         {
@@ -136,16 +136,15 @@ export default {
       return value * this.getRate
     },
     async getItems() {
-      let { data } = await this.axios.get('procurement/request-for-quotation/' + this.$route.params.id, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      this.loading = true
+      let { data } = await this.axios.get('procurement/request-for-quotation/' + this.$route.params.id)
 
       this.items = data.data.items
+
+      this.loading = false
     },
     async getVendors() {
-      let { data } = await this.axios.get('vendor/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('vendor/all')
 
       this.vendors = data.data
     },

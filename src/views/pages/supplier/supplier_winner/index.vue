@@ -20,7 +20,7 @@
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected"
         :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -49,11 +49,11 @@
       <div>
         Aplikasi lama:<br>
         <pre>
-                   -- No PO
-              -- Nama Pemesanan
-              -- Tanggal PO Dibuat
-              -- Delivery Location
-                    </pre>
+                         -- No PO
+                    -- Nama Pemesanan
+                    -- Tanggal PO Dibuat
+                    -- Delivery Location
+                          </pre>
       </div>
     </b-card>
 
@@ -70,7 +70,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       filter: {
         selected: null,
         options: [],
@@ -117,9 +116,7 @@ export default {
     },
     async getItems(page) {
       page = page ?? 1
-      let { data } = await this.axios.get('procurement/purchase-request?page=' + page, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('procurement/purchase-request?page=' + page)
 
       this.items = data.data
       this.meta.total = data.meta.total

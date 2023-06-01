@@ -19,7 +19,7 @@
       </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -37,7 +37,7 @@
           {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
         </template>
 
-        <template #cell(file)="{ value, item }">
+        <template #cell(file)="{ value }">
           <a :href="value" target="_blank">File</a>
         </template>
 
@@ -90,7 +90,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       loading: false,
       items: [],
       id: null,
@@ -163,9 +162,7 @@ export default {
     },
     async getItems() {
       this.loading = true
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id)
 
       this.id = data.data.id
       this.total = data.data.total
@@ -177,9 +174,7 @@ export default {
     async onDeleteItem(item) {
       let result = confirm('Apakah yakin akan menghapus ' + item.material.name + '?')
       if (result) {
-          let { data } = await this.axios.delete('purchase-request-item/' + item.id, {
-          headers: { Authorization: 'Bearer ' + this.token }
-        })
+        let { data } = await this.axios.delete('purchase-request-item/' + item.id)
 
         if (data.status == "SUCCESS") {
           this.getItems()
@@ -190,9 +185,7 @@ export default {
       }
     },
     async submitPR() {
-      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id + '/apply', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('purchase-request/' + this.$route.params.id + '/apply')
 
       if (data.status == "SUCCESS") {
         alert(data.message)

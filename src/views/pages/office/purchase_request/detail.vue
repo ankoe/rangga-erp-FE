@@ -13,7 +13,7 @@
       </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -71,7 +71,7 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
+      loading: false,
       items: [],
       id: null,
       total: null,
@@ -135,22 +135,20 @@ export default {
       return value * this.getRate
     },
     async getItems() {
-      let { data } = await this.axios.get('office/purchase-request/' + this.$route.params.id, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      this.loading = true
+      let { data } = await this.axios.get('office/purchase-request/' + this.$route.params.id)
 
       this.id = data.data.id
       this.total = data.data.total
       this.status = data.data.status
       this.items = data.data.items
+
+      this.loading = false
     },
     async onApprove() {
       let { data } = await this.axios.post('office/purchase-request/' + this.$route.params.id + '/approval',
         {
           decision: 'approve'
-        },
-        {
-          headers: { Authorization: 'Bearer ' + this.token }
         })
 
       if (data.status == "SUCCESS") {
@@ -179,9 +177,6 @@ export default {
           {
             decision: 'reject',
             remarks
-          },
-          {
-            headers: { Authorization: 'Bearer ' + this.token }
           })
 
         if (data.status == "SUCCESS") {

@@ -20,7 +20,7 @@
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected"
         :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
@@ -56,13 +56,17 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
+      loading: false,
       filter: {
         selected: null,
         options: [],
       },
       items: [],
       fields: [
+        {
+          key: 'code',
+          label: 'Number',
+        },
         {
           key: 'user.name',
           label: 'User',
@@ -98,15 +102,16 @@ export default {
       return value * this.getRate
     },
     async getItems(page) {
+      this.loading = true
       page = page ?? 1
-      let { data } = await this.axios.get('office/purchase-request?page=' + page, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('office/purchase-request?page=' + page)
 
       this.items = data.data
       this.meta.total = data.meta.total
       this.meta.perPage = data.meta.per_page
       this.meta.currentPage = data.meta.current_page
+
+      this.loading = false
     },
     onRowSelected(items) {
       this.$router.push({ name: 'office-purchase-request-detail', params: { id: items[0].id } })

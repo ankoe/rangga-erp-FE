@@ -106,7 +106,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       roles: [],
       offices: [],
       procurements: [],
@@ -137,9 +136,7 @@ export default {
   },
   methods: {
     async getItems() {
-      let { data } = await this.axios.get('config-approval', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('config-approval')
 
       await data.data.forEach((approval) => {
         if (approval.role.group == 'office') {
@@ -151,9 +148,7 @@ export default {
       // perlu disorting
     },
     async getRoles() {
-      let { data } = await this.axios.get('role/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('role/all')
 
       this.roles = data.data
     },
@@ -222,9 +217,7 @@ export default {
       let { data } = await this.axios.put('config-approval/sort',
         {
           approvals
-        }, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+        })
 
       alert(data.message)
     },

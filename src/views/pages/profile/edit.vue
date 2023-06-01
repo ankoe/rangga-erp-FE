@@ -45,7 +45,6 @@
 export default {
   data() {
     return {
-      token: localStorage.getItem("token"),
       form: {
         name: null,
         email: null,
@@ -63,8 +62,6 @@ export default {
         name: this.form.name,
         mobile: this.form.password,
         image_profile: this.form.image_profile,
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {
@@ -80,9 +77,7 @@ export default {
       }
     },
     async getDetail() {
-      let { data } = await this.axios.get('profile', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('profile')
 
       if (data.status == "SUCCESS") {
         this.form.name = data.data.name

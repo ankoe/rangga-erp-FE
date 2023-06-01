@@ -36,7 +36,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       form: {
         name: null
       }
@@ -49,8 +48,6 @@ export default {
     async onSubmit() {
       let { data } = await this.axios.put('material-category/' + this.$route.params.id, {
         name: this.form.name
-      }, {
-        headers: { Authorization: 'Bearer ' + this.token }
       })
 
       if (data.status == "SUCCESS") {
@@ -63,9 +60,7 @@ export default {
       }
     },
     async getDetail() {
-      let { data } = await this.axios.get('material-category/' + this.$route.params.id, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('material-category/' + this.$route.params.id)
 
       if (data.status == "SUCCESS") {
         this.form.name = data.data.name

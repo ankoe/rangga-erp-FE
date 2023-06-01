@@ -1,5 +1,3 @@
-import VueAxios from 'vue-axios'
-
 const state = {
     rate: 15000,
     currency: 'idr'

@@ -127,15 +127,15 @@
       </b-col>
     </b-row>
 
-    <b-modal id="modal-add-vendor" centered title="Add Supplier" ref="supplierModal" @show="supplierModalReset" @hidden="supplierModalReset"
-      @ok="supplierModalOk">
+    <b-modal id="modal-add-vendor" centered title="Add Supplier" ref="supplierModal" @show="supplierModalReset"
+      @hidden="supplierModalReset" @ok="supplierModalOk">
       <form ref="form" @submit.stop.prevent="supplierModalSubmit">
 
       </form>
     </b-modal>
 
-    <b-modal id="modal-add-location" centered title="Add Location" ref="locationModal" @show="locationModalRest" @hidden="locationModalRest"
-      @ok="locationModalOk">
+    <b-modal id="modal-add-location" centered title="Add Location" ref="locationModal" @show="locationModalRest"
+      @hidden="locationModalRest" @ok="locationModalOk">
       <form ref="form" @submit.stop.prevent="locationModalSubmit">
 
       </form>
@@ -150,7 +150,6 @@ export default {
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       materials: [],
       vendors: [],
       locations: [],
@@ -203,23 +202,17 @@ export default {
       return (this.forms[index].material_price ?? 0) * this.forms[index].qty
     },
     async getMaterials() {
-      let { data } = await this.axios.get('material/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('material/all')
 
       this.materials = data.data
     },
     async getVendors() {
-      let { data } = await this.axios.get('vendor/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('vendor/all')
 
       this.vendors = data.data
     },
     async getLocations() {
-      let { data } = await this.axios.get('branch/all', {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('branch/all')
 
       this.locations = data.data
     },
@@ -250,9 +243,7 @@ export default {
       }
     },
     async storePurchaseRequest() {
-      let { data } = await this.axios.post('purchase-request', {}, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.post('purchase-request')
 
       return (data.status == "SUCCESS") ? data.data.id : false
     },
@@ -269,9 +260,7 @@ export default {
       formData.append("expected_at", form.expected_date)
       formData.append("file", form.file)
 
-      await this.axios.post('purchase-request-item', formData, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      await this.axios.post('purchase-request-item', formData)
     },
     async onSubmit() {
       let purchaseRequestId = await this.storePurchaseRequest()
