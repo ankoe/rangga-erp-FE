@@ -88,17 +88,18 @@ axios.interceptors.response.use(
 
       return new Promise((resolve, reject) => {
         axios
-          .post('/auth/refresh', { refresh_token: store.state.auth.token })
+          .get('/auth/refresh')
           .then((response) => {
             const token = response.data.data.token
-            store.commit('auth/setToken', token)
+            store.commit('setToken', token)
             localStorage.setItem('token', token)
-            originalRequest.headers.Authorization = 'Bearer ' + token;
+            originalRequest.headers.Authorization = 'Bearer ' + token
+
             onRefreshed(token)
             resolve(axios(originalRequest))
           })
           .catch((error) => {
-            store.dispatch('auth/logout') // Logout jika refresh token gagal
+            store.dispatch('logout') // Logout jika refresh token gagal
             reject(error)
           })
           .finally(() => {

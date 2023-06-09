@@ -2,15 +2,23 @@
   <div class="main-content">
     <breadcumb :page="'Blank'" :folder="'Pages'" />
 
-    <b-alert show variant="warning" class="text-center">
-      Jika ada yang tereject akan kembali keseluruhan ke pengusul
-    </b-alert>
-
     <b-card class="wrapper">
       <b-card-header>
         <b-row>
           <b-col lg="3" class="mt-auto">
-            <h5>Number : {{ code }}</h5>
+            <b-form-group id="fieldset-1" label="" label-for="input-1">
+
+              <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
+                <b-form-select size="sm" v-model="selected" :options="options"
+                  v-on:change="filterStatus()"></b-form-select>
+              </b-form-group>
+            </b-form-group>
+
+          </b-col>
+          <b-col lg="3" offset-lg="6" class="mt-auto">
+            <router-link :to="{ name: 'purchase-request-create' }" class="btn btn-info btn-block btn-sm mb-3">
+              Tambah Purchase Request
+            </router-link>
           </b-col>
         </b-row>
       </b-card-header>
@@ -43,34 +51,16 @@
         </template>
 
         <template #cell(action)="{ item }">
-          <template v-if="status && status.title == 'waiting procurement approval'">
-            <b-form-select :options="['approve', 'reject']" v-model="item.decision" id="inline-form-custom-select-pref1">
-              <template #first>
-                <b-form-select-option :value="null" disabled>--</b-form-select-option>
-              </template>
-            </b-form-select>
-            <b-form-textarea v-model="item.remarks" placeholder="remarks can fill if reject" class="mt-2"
-              :disabled="item.decision != 'reject'"></b-form-textarea>
-          </template>
-          <span v-else class="text-center">
-            -
-          </span>
+          <router-link
+            :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }"
+            class="btn btn-info btn-sm">
+            Edit
+          </router-link>
+          <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-danger btn-sm">
+            Delete
+          </router-link>
         </template>
       </b-table>
-
-      <b-card-footer>
-        <b-row class="mt-4">
-          <b-col md="8">
-            <h4>Status: {{ status ? status.description : '' }}</h4>
-          </b-col>
-          <b-col v-if="status && status.title == 'waiting procurement approval'" md="4" class=" text-right">
-            <button type="button" class="btn btn-success btn-sm mb-3" @click="onProceed">
-              Proceed
-            </button>
-          </b-col>
-        </b-row>
-      </b-card-footer>
-
     </b-card>
 
   </div>
@@ -88,9 +78,6 @@ export default {
     return {
       loading: false,
       items: [],
-      total: 0,
-      status: null,
-      code: null,
       fields: [
         {
           key: 'material.number',
@@ -139,7 +126,6 @@ export default {
         {
           key: 'action',
           label: 'Action',
-          tdClass: 'text-center'
         },
       ],
     }
@@ -156,45 +142,12 @@ export default {
     },
     async getItems() {
       this.loading = true
-      let { data } = await this.axios.get('procurement/purchase-request/' + this.$route.params.id)
+      let { data } = await this.axios.get('procurement/purchase-order/' + this.$route.params.id)
 
-      this.id = data.data.id
-      this.total = data.data.total
-      this.status = data.data.status
-      this.code = data.data.code
       this.items = data.data.items
 
       this.loading = false
-    },
-    async onProceed() {
-      let readySubmit = true
-      await this.items.forEach(item => {
-        if (!item.decision) readySubmit = false
-      })
-
-      if (readySubmit) {
-
-        let { data } = await this.axios.post('procurement/purchase-request/' + this.$route.params.id + '/approval',
-          {
-            items: this.items.map(item => {
-              return {
-                id: item.id,
-                decision: item.decision,
-                remarks: item.remarks,
-              }
-            }),
-          })
-
-        if (data.status == "SUCCESS") {
-          alert(data.message)
-          this.getItems()
-        } else {
-          alert(data.message)
-        }
-      } else {
-        alert('All items must choose!')
-      }
-    },
+    }
   }
 }
 </script>

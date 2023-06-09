@@ -16,7 +16,7 @@
                     Hapus
                   </button>
                 </div>
-                <b-form-group label="Material Number" label-for="input-1" class="col-md-6">
+                <b-form-group label="Material Number*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="number" name="Material Number" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.material_id" :options="getOptionMaterials"
                       id="inline-form-custom-select-pref1" @change="onInitMaterial(index)">
@@ -28,21 +28,21 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="Material Description" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="Material Description*" label-for="input-1">
                   <ValidationProvider ref="description" name="Material Description" rules="required" v-slot="{ errors }">
                     <b-form-input v-model="form.material_description" type="text"
                       placeholder="Material Description"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="UOM" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="UOM*" label-for="input-1">
                   <ValidationProvider ref="uom" name="UOM" rules="required" v-slot="{ errors }">
                     <b-form-input v-model="form.material_uom" type="text" required placeholder="UOM"
                       readonly></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="Unit Price" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="Unit Price*" label-for="input-1">
                   <ValidationProvider ref="price" name="Unit Price" rules="required|numeric|max_value:99999999"
                     v-slot="{ errors }">
                     <b-input-group prepend="IDR">
@@ -52,7 +52,7 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="QTY" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="QTY*" label-for="input-1">
                   <ValidationProvider ref="qty" name="QTY" rules="required|numeric|max_value:99999999"
                     v-slot="{ errors }">
                     <money v-model="form.qty" type="text" required placeholder="QTY" class="form-control" />
@@ -60,7 +60,7 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="Unit Total" label-for="input-1" class="col-md-6">
+                <b-form-group label="Unit Total*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="total" name="Unit Total" rules="required" v-slot="{ errors }">
                     <b-input-group prepend="IDR">
                       <money type="text" required placeholder="Unit Total" :value="calculateTotal(index)" readonly
@@ -70,7 +70,7 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="Proposed Supplier" label-for="input-1" class="col-md-6">
+                <b-form-group label="Proposed Supplier*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="supplier" name="Proposed Supplier" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.vendor_id" :options="getOptionVendors(index)"
                       id="inline-form-custom-select-pref1">
@@ -85,7 +85,7 @@
                     supplier</b-button>
                 </b-form-group>
 
-                <b-form-group label="Delivery Location" label-for="input-1" class="col-md-6">
+                <b-form-group label="Delivery Location*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="location" name="Delivery Location" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.location_id" :options="getOptionLocations"
                       id="inline-form-custom-select-pref1">
@@ -99,14 +99,14 @@
                     location</b-button>
                 </b-form-group>
 
-                <b-form-group label="Expected Date" label-for="input-1" class="col-md-6">
+                <b-form-group label="Expected Date*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="expected" name="Expected Date" rules="required" v-slot="{ errors }">
                     <b-form-datepicker v-model="form.expected_date" :min="new Date()"></b-form-datepicker>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="File" label-for="input-1" class="col-md-6">
+                <b-form-group label="File*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="file" name="File" rules="required" v-slot="{ errors }">
                     <b-form-file v-model="form.file" placeholder="Choose a file or drop it here..."
                       drop-placeholder="Drop file here..." />

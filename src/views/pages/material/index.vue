@@ -5,17 +5,7 @@
     <b-card class="wrapper">
       <b-card-header>
         <b-row>
-          <b-col lg="3" class="mt-auto">
-            <b-form-group id="fieldset-1" label="" label-for="input-1">
-
-              <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                <b-form-select size="sm" v-model="filter.selected" :options="filter.options"
-                  v-on:change="filterStatus()"></b-form-select>
-              </b-form-group>
-            </b-form-group>
-
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
+          <b-col lg="3" offset-lg="9" class="mt-auto">
             <router-link :to="{ name: 'material-create' }" class="btn btn-info btn-block btn-sm mb-3">
               Tambah Material
             </router-link>

@@ -109,7 +109,7 @@ const routes = [
         component: () => import("./views/pages/location/edit")
       },
 
-      // material
+      // material category
       {
         path: "material-category",
         name: "material-category-index",
@@ -341,6 +341,40 @@ const routes = [
         name: "password-reset",
         component: () => import("./views/pages/auth/passwordReset")
       },
+    ]
+  },
+
+  // vendor-access
+  {
+    path: "/vendor-access                    ",
+    // component: () => import("./views/pages/auth"),
+    redirect: "/auth/login",
+    children: [
+      // {
+      //   path: ":slug",
+      //   name: "vendor-access-dashboard",
+      //   component: () => import("./views/pages/vendor_access/login")
+      // },
+      // {
+      //   path: ":slug/request-for-quotation",
+      //   name: "vendor-access-request-for-quotation-index",
+      //   component: () => import("./views/pages/vendor_access/register")
+      // },
+      // {
+      //   path: ":slug/request-for-quotation/:id",
+      //   name: "vendor-access-request-for-quotation-detail",
+      //   component: () => import("./views/pages/vendor_access/register")
+      // },
+      // {
+      //   path: ":slug/purchase-order",
+      //   name: "vendor-access-purchase-order-index",
+      //   component: () => import("./views/pages/vendor_access/register")
+      // },
+      // {
+      //   path: ":slug/purchase-order/:id",
+      //   name: "vendor-access-purchase-order-detail",
+      //   component: () => import("./views/pages/vendor_access/register")
+      // },
     ]
   },
 

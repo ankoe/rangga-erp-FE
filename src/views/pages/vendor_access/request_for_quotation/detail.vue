@@ -57,7 +57,7 @@
                 <b-col>{{ requestQuotation.vendor_price ? requestQuotation.vendor_price : '-' }}</b-col>
                 <b-col>{{ requestQuotation.vendor_stock ? requestQuotation.vendor_stock : '-' }}</b-col>
                 <b-col>
-                  <b-form-radio v-if="status && status.title == 'waiting rfq approval'"
+                  <b-form-radio v-if="status && status.title == 'waiting rfq response'"
                     v-model="row.item.request_quotation_selected" :aria-describedby="ariaDescribedby"
                     :name="'request-quotation-' + requestQuotation.id" :value="requestQuotation.id">Pilih</b-form-radio>
                   <template v-else>

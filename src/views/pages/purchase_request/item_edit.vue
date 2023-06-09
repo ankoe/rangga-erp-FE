@@ -9,7 +9,7 @@
           <ValidationObserver v-slot="{ handleSubmit }" ref="form">
             <b-form @submit.prevent="handleSubmit(onSubmit)">
               <b-row>
-                <b-form-group label="Material Number" label-for="input-1" class="col-md-6">
+                <b-form-group label="Material Number*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="number" name="Material Number" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.material_id" :options="getOptionMaterials"
                       id="inline-form-custom-select-pref1" @change="onInitMaterial()">
@@ -21,21 +21,21 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="Material Description" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="Material Description*" label-for="input-1">
                   <ValidationProvider ref="description" name="Material Description" rules="required" v-slot="{ errors }">
                     <b-form-input v-model="form.material_description" type="text"
                       placeholder="Material Description"></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="UOM" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="UOM*" label-for="input-1">
                   <ValidationProvider ref="uom" name="UOM" rules="required" v-slot="{ errors }">
                     <b-form-input v-model="form.material_uom" type="text" required placeholder="UOM"
                       readonly></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="Unit Price" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="Unit Price*" label-for="input-1">
                   <ValidationProvider ref="price" name="Unit Price" rules="required|numeric|max_value:99999999"
                     v-slot="{ errors }">
                     <b-input-group prepend="IDR">
@@ -45,7 +45,7 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="QTY" label-for="input-1">
+                <b-form-group class="col-md-6 mb-3" label="QTY*" label-for="input-1">
                   <ValidationProvider ref="qty" name="QTY" rules="required|numeric|max_value:99999999"
                     v-slot="{ errors }">
                     <money v-model="form.qty" type="text" required placeholder="QTY" class="form-control" />
@@ -53,7 +53,7 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="Unit Total" label-for="input-1" class="col-md-6">
+                <b-form-group label="Unit Total*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="total" name="Unit Total" rules="required" v-slot="{ errors }">
                     <b-input-group prepend="IDR">
                       <money type="text" required placeholder="Unit Total" :value="calculateTotal" readonly
@@ -63,7 +63,7 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="Proposed Supplier" label-for="input-1" class="col-md-6">
+                <b-form-group label="Proposed Supplier*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="supplier" name="Proposed Supplier" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.vendor_id" :options="getOptionVendors"
                       id="inline-form-custom-select-pref1">
@@ -76,7 +76,7 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="Delivery Location" label-for="input-1" class="col-md-6">
+                <b-form-group label="Delivery Location*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="location" name="Delivery Location" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.location_id" :options="getOptionLocations"
                       id="inline-form-custom-select-pref1">
@@ -88,7 +88,7 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="Expected Date" label-for="input-1" class="col-md-6">
+                <b-form-group label="Expected Date*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="expected" name="Expected Date" rules="required" v-slot="{ errors }">
                     <b-form-datepicker v-model="form.expected_date" :min="new Date()"></b-form-datepicker>
                     <span class="text-danger small">{{ errors[0] }}</span>
@@ -96,7 +96,7 @@
                 </b-form-group>
 
                 <b-form-group label="File" label-for="input-1" class="col-md-6">
-                  <ValidationProvider ref="file" name="File" rules="required" v-slot="{ errors }">
+                  <ValidationProvider ref="file" name="File" rules="" v-slot="{ errors }">
                     <b-form-file v-model="form.file" placeholder="Choose a file or drop it here..."
                       drop-placeholder="Drop file here..." />
                     <span class="text-danger small">{{ errors[0] }}</span>
@@ -136,6 +136,7 @@ export default {
         location_id: null,
         expected_date: null,
         file: null,
+        file_old: null
       }
     }
   },
@@ -185,7 +186,7 @@ export default {
         this.form.vendor_id = data.data.vendor.id
         this.form.location_id = data.data.branch.id
         this.form.expected_date = data.data.expected_at
-        this.form.file = data.data.file
+        this.form.file_old = data.data.file
       } else {
         alert(data.message)
       }
@@ -215,6 +216,7 @@ export default {
     async onSubmit() {
       let formData = new FormData()
 
+      formData.append('_method', 'put');
       formData.append("purchase_request_id", this.$route.params.id)
       formData.append("material_id", this.form.material_id)
       formData.append("price", this.form.material_price)
@@ -223,9 +225,9 @@ export default {
       formData.append("vendor_id", this.form.vendor_id)
       formData.append("branch_id", this.form.location_id)
       formData.append("expected_at", this.form.expected_date)
-      formData.append("file", this.form.file)
+      if (this.form.file) formData.append("file", this.form.file)
 
-      let { data } = await this.axios.put('purchase-request-item/' + this.$route.params.item, formData)
+      let { data } = await this.axios.post('purchase-request-item/' + this.$route.params.item, formData)
 
       if (data.status == "SUCCESS") {
         alert(data.message)

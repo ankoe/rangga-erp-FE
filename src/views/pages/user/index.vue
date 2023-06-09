@@ -14,7 +14,7 @@
       </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
-        <template #empty="scope">
+        <template #empty>
           Data not found or empty
         </template>
         <template #table-busy>
