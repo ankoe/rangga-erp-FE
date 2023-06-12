@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Dashboard'" :folder="'-'" />
+    <breadcumb :page="'Dashboard'" :folder="'Vendor Access'" />
 
 
   </div>

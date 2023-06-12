@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'List'" :folder="'Purchase Request'" />
+    <breadcumb :page="'List'" :folder="'Purchase Order'" />
 
     <b-card class="wrapper">
 

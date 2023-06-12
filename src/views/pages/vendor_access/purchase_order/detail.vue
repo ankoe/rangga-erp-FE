@@ -1,27 +1,8 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="'-'" :folder="'Purchase Order'" />
 
     <b-card class="wrapper">
-      <b-card-header>
-        <b-row>
-          <b-col lg="3" class="mt-auto">
-            <b-form-group id="fieldset-1" label="" label-for="input-1">
-
-              <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                <b-form-select size="sm" v-model="selected" :options="options"
-                  v-on:change="filterStatus()"></b-form-select>
-              </b-form-group>
-            </b-form-group>
-
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link :to="{ name: 'purchase-request-create' }" class="btn btn-info btn-block btn-sm mb-3">
-              Tambah Purchase Request
-            </router-link>
-          </b-col>
-        </b-row>
-      </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
         <template #empty>
@@ -142,7 +123,7 @@ export default {
     },
     async getItems() {
       this.loading = true
-      let { data } = await this.axios.get('procurement/purchase-order/' + this.$route.params.id)
+      let { data } = await this.axios.get('supplier/purchase-order/' + this.$route.params.id)
 
       this.items = data.data.items
 

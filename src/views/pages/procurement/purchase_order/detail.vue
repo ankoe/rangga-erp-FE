@@ -3,15 +3,6 @@
     <breadcumb :page="'-'" :folder="'Purchase Order'" />
 
     <b-card class="wrapper">
-      <b-card-header>
-        <b-row>
-          <b-col lg="3" offset-lg="9" class="mt-auto">
-            <b-button type="button" class="btn btn-info btn-block btn-sm mb-3">
-              Download Document
-            </b-button>
-          </b-col>
-        </b-row>
-      </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
         <template #empty>
@@ -55,6 +46,12 @@
 
         <template #cell(winning_vendor_incoterms)="{ value }">
           {{ value ? value : '-' }}
+        </template>
+
+        <template #cell(action)="{ item }">
+          <b-button v-if="item.winning_vendor" type="button" variant="success" size="sm"
+            @click="onGeneratePO(item)">Download Dokumen PO</b-button>
+          <span v-else>-</span>
         </template>
 
       </b-table>
@@ -140,10 +137,10 @@ export default {
         //   key: 'total',
         //   label: 'Total Value',
         // },
-        // {
-        //   key: 'action',
-        //   label: 'Action',
-        // },
+        {
+          key: 'action',
+          label: 'Action',
+        },
       ],
     }
   },
@@ -164,6 +161,10 @@ export default {
       this.items = data.data.items
 
       this.loading = false
+    },
+    onGeneratePO(item) {
+      const vendorId = item.winning_vendor ? item.winning_vendor.id : null
+      this.axios.get('procurement/purchase-order/' + this.$route.params.id + '/generate-po-vendor/' + vendorId)
     }
   }
 }

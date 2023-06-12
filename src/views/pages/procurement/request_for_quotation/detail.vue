@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="code" :folder="'Request for Quotation'" />
 
     <b-card class="wrapper">
       <b-card-header>

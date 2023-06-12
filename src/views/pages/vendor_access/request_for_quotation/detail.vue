@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="code" :folder="'Request for Quotation'" />
 
     <b-card class="wrapper">
       <b-card-header>
@@ -167,7 +167,6 @@ export default {
   },
   mounted() {
     this.getItems()
-    this.getVendors()
   },
   computed: {
     ...mapGetters(["getRate", "getExchangeLocale"]),
@@ -192,20 +191,6 @@ export default {
       })
 
       this.loading = false
-    },
-    async getVendors() {
-      let { data } = await this.axios.get('vendor/all')
-
-      this.vendors = data.data
-    },
-    filteredVendors(item) {
-      return this.vendors.filter(vendor => {
-        return vendor.material_category.id == item.material.material_category.id
-      }).filter(vendor => {
-        return vendor.name.toLowerCase().indexOf(item.tag.toLowerCase()) !== -1
-      }).map(vendor => {
-        return { text: vendor.name }
-      })
     },
     async onSubmitVendor() {
       let readySubmit = true
