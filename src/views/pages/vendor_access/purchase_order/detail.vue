@@ -123,7 +123,7 @@ export default {
     },
     async getItems() {
       this.loading = true
-      let { data } = await this.axios.get('supplier/purchase-order/' + this.$route.params.id)
+      let { data } = await this.axios.get('supplier/' + this.$route.params.slug + '/purchase-order/' + this.$route.params.id)
 
       this.items = data.data.items
 

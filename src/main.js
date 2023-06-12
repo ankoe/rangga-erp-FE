@@ -40,6 +40,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 const baseUrl = 'http://127.0.0.1:8005'
+// const baseUrl = 'http://api.haricar.com'
 axios.defaults.baseURL = baseUrl + '/api/'
 // firebase.initializeApp(firebaseSettings);
 // Axios Interceptor

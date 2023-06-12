@@ -3,14 +3,6 @@
     <breadcumb :page="code" :folder="'Request for Quotation'" />
 
     <b-card class="wrapper">
-      <b-card-header>
-        <b-row>
-          <b-col lg="3" class="mt-auto">
-            <h5>Number : {{ code }}</h5>
-
-          </b-col>
-        </b-row>
-      </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
         <template #empty>
@@ -23,10 +15,6 @@
           </div>
         </template>
 
-        <template #cell(price)="{ value }">
-          {{ $n(exchange(value), 'currency', getExchangeLocale) }}
-        </template>
-
         <template #cell(expected_at)="{ value }">
           {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
         </template>
@@ -35,63 +23,25 @@
           <a :href="value" target="_blank">File</a>
         </template>
 
-        <template #cell(total)="{ value }">
-          {{ $n(exchange(value), 'currency', getExchangeLocale) }}
+        <template #cell(vendor_price)="{ item }">
+          <b-form-input size="sm" v-model="item.vendor_price" />
         </template>
 
-        <template #cell(action)="{ item }">
-          <vue-tags-input v-if="status && status.title == 'waiting rfq response'" v-model="item.tag" :tags="item.tags"
-            :add-only-from-autocomplete="true" placeholder="add vendor" :autocomplete-items="filteredVendors(item)"
-            @tags-changed="newTags => item.tags = newTags" />
-          <b-button v-else size="sm" @click="item._showDetails = !item._showDetails">
-            {{ item._showDetails ? 'Hide' : 'Show' }} Details
-          </b-button>
+        <template #cell(vendor_stock)="{ item }">
+          <b-form-input size="sm" v-model="item.vendor_stock" />
         </template>
 
-        <template #row-details="row">
-          <b-card>
-            <b-form-group v-slot="{ ariaDescribedby }">
-
-              <b-row v-for="(requestQuotation, index) in row.item.request_quotation" :key="index" class="mb-2">
-                <b-col class=""><b>{{ requestQuotation.vendor.name }}</b></b-col>
-                <b-col>{{ requestQuotation.vendor_price ? requestQuotation.vendor_price : '-' }}</b-col>
-                <b-col>{{ requestQuotation.vendor_stock ? requestQuotation.vendor_stock : '-' }}</b-col>
-                <b-col>
-                  <b-form-radio v-if="status && status.title == 'waiting rfq response'"
-                    v-model="row.item.request_quotation_selected" :aria-describedby="ariaDescribedby"
-                    :name="'request-quotation-' + requestQuotation.id" :value="requestQuotation.id">Pilih</b-form-radio>
-                  <template v-else>
-                    {{ requestQuotation.is_selected ? 'selected' : '-' }}
-                  </template>
-                </b-col>
-              </b-row>
-            </b-form-group>
-          </b-card>
+        <template #cell(vendor_incoterms)="{ item }">
+          <b-form-select size="sm" v-model="item.vendor_incoterms" :options="incoterms"></b-form-select>
         </template>
       </b-table>
 
       <b-card-footer>
         <b-row class="mt-4">
-          <b-col md="8">
-            <h4>Status: {{ status ? status.description : '' }}</h4>
-          </b-col>
-          <b-col class="text-right">
-            <button v-if="status && status.title == 'waiting rfq response'" type="button"
-              class="btn btn-success btn-sm mb-3" @click="onSubmitVendor()">
-              Submit Vendor
+          <b-col class="text-right" offset-md="8">
+            <button type="button" class="btn btn-success btn-sm mb-3" @click="onSubmitOffer()">
+              Submit offer
             </button>
-            <button v-if="status && status.title == 'waiting rfq approval'" type=" button"
-              class="btn btn-success btn-sm mb-3" @click="onSubmitApproval()">
-              Send Approval
-            </button>
-            <template v-if="status && status.title == 'waiting po confirmation'">
-              <button type=" button" class="btn btn-danger btn-sm mb-3" @click="onReject()">
-                Reject
-              </button>
-              <button type=" button" class="btn btn-success btn-sm mb-3 ml-2" @click="onApprove()">
-                Approve
-              </button>
-            </template>
           </b-col>
         </b-row>
       </b-card-footer>
@@ -112,6 +62,19 @@ export default {
       code: null,
       status: null,
       items: [],
+      incoterms: [
+        'Ex-Works or Ex-Warehouse',
+        'Free to Carrier',
+        'Free Alongside Ship',
+        'Free On Board',
+        'Cost and Freight',
+        'Cost, Insurance and Freight',
+        'Carriage Paid To',
+        'Carriage And Insurance Paid To',
+        'Delivered At Place',
+        'Delivered At Place Unloaded',
+        'Delivered Duty Paid'
+      ],
       fields: [
         {
           key: 'material.number',
@@ -134,14 +97,6 @@ export default {
           label: 'QTY',
         },
         {
-          key: 'vendor.name',
-          label: 'Proposed Supplier',
-        },
-        {
-          key: 'price',
-          label: 'Unit Price',
-        },
-        {
           key: 'branch.name',
           label: 'Delivery Location',
         },
@@ -154,13 +109,17 @@ export default {
           label: 'File',
         },
         {
-          key: 'total',
-          label: 'Total Value',
+          key: 'vendor_price',
+          label: 'Vendor Price',
         },
         {
-          key: 'action',
-          label: 'Vendor',
+          key: 'vendor_stock',
+          label: 'Vendor Stock',
         },
+        {
+          key: 'vendor_incoterms',
+          label: 'Vendor Incoterms',
+        }
       ],
       vendors: [],
     }
@@ -177,16 +136,12 @@ export default {
     },
     async getItems() {
       this.loading = true
-      let { data } = await this.axios.get('procurement/request-for-quotation/' + this.$route.params.id)
+      let { data } = await this.axios.get('supplier/' + this.$route.params.slug + '/request-for-quotation/' + this.$route.params.id)
 
       this.code = data.data.code
       this.status = data.data.status
 
-      this.items = data.data.items.map(item => {
-        item.tag = ''
-        item.tags = []
-        item._showDetails = false
-        item.request_quotation_selected = null
+      this.items = data.data.map(item => {
         return item
       })
 

@@ -15,16 +15,6 @@
             <strong>Loading...</strong>
           </div>
         </template>
-
-        <template #cell(created_at)="{ value }">
-          {{ value | luxon }}
-        </template>
-        <template #cell(updated_at)="{ value }">
-          {{ value | luxon }}
-        </template>
-        <template #cell(total)="{ value }">
-          {{ $n(exchange(value), 'currency', getExchangeLocale) }}
-        </template>
       </b-table>
 
       <div class="mt-3">
@@ -53,26 +43,6 @@ export default {
           key: 'code',
           label: 'Number',
         },
-        {
-          key: 'user.name',
-          label: 'Username',
-        },
-        {
-          key: 'status.description',
-          label: 'Status',
-        },
-        {
-          key: 'created_at',
-          label: 'Created PR',
-        },
-        {
-          key: 'updated_at',
-          label: 'updated PR',
-        },
-        {
-          key: 'total',
-          label: 'Total Value',
-        },
       ],
       meta: {
         total: 0,
@@ -94,7 +64,7 @@ export default {
     async getItems(page) {
       this.loading = true
       page = page ?? 1
-      let { data } = await this.axios.get('supplier/request-for-quotation?page=' + page)
+      let { data } = await this.axios.get('supplier/' + this.$route.params.slug + '/request-for-quotation?page=' + page)
 
       this.items = data.data
       this.meta.total = data.meta.total
