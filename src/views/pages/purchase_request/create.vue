@@ -81,8 +81,6 @@
                     </b-form-select>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
-                  <b-button variant="link" class="mt-2 p-0" @click="$bvModal.show('modal-add-vendor')">Add
-                    supplier</b-button>
                 </b-form-group>
 
                 <b-form-group label="Delivery Location*" label-for="input-1" class="col-md-6">
@@ -95,8 +93,6 @@
                     </b-form-select>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
-                  <b-button variant="link" class="mt-2 p-0" @click="$bvModal.show('modal-add-location')">Add
-                    location</b-button>
                 </b-form-group>
 
                 <b-form-group label="Expected Date*" label-for="input-1" class="col-md-6">

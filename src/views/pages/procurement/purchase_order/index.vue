@@ -3,23 +3,6 @@
     <breadcumb :page="'List'" :folder="'Purchase Request'" />
 
     <b-card class="wrapper">
-      <b-card-header>
-        <b-row>
-          <b-col lg="3" class="mt-auto">
-            <b-form-group id="fieldset-1" label="" label-for="input-1">
-
-              <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                <b-form-select size="sm" v-model="filter.selected" :options="filter.options" v-on:change="getItems()">
-                  <template #first>
-                    <b-form-select-option :value="null">All</b-form-select-option>
-                  </template>
-                </b-form-select>
-              </b-form-group>
-            </b-form-group>
-
-          </b-col>
-        </b-row>
-      </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" selectable @row-selected="onRowSelected"
         :busy="loading" show-empty>
@@ -38,9 +21,6 @@
         </template>
         <template #cell(updated_at)="{ value }">
           {{ value | luxon }}
-        </template>
-        <template #cell(total)="{ value }">
-          {{ $n(exchange(value), 'currency', getExchangeLocale) }}
         </template>
       </b-table>
 
@@ -86,10 +66,6 @@ export default {
           key: 'updated_at',
           label: 'updated PR',
         },
-        {
-          key: 'total',
-          label: 'Total Value',
-        },
       ],
       meta: {
         total: 0,
@@ -100,7 +76,6 @@ export default {
   },
   mounted() {
     this.getItems()
-    this.getFilterOptions()
   },
   computed: {
     ...mapGetters(["getRate", "getExchangeLocale"])
@@ -108,12 +83,6 @@ export default {
   methods: {
     exchange(value) {
       return value * this.getRate
-    },
-    async getFilterOptions() {
-      let { data } = await this.axios.get('purchase-request-status/all')
-      this.filter.options = data.map(option => {
-        return { value: option.id, text: option.description }
-      })
     },
     async getItems(page) {
       this.loading = true

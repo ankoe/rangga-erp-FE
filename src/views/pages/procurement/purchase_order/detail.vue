@@ -1,24 +1,14 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="'-'" :folder="'Purchase Order'" />
 
     <b-card class="wrapper">
       <b-card-header>
         <b-row>
-          <b-col lg="3" class="mt-auto">
-            <b-form-group id="fieldset-1" label="" label-for="input-1">
-
-              <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                <b-form-select size="sm" v-model="selected" :options="options"
-                  v-on:change="filterStatus()"></b-form-select>
-              </b-form-group>
-            </b-form-group>
-
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link :to="{ name: 'purchase-request-create' }" class="btn btn-info btn-block btn-sm mb-3">
-              Tambah Purchase Request
-            </router-link>
+          <b-col lg="3" offset-lg="9" class="mt-auto">
+            <b-button type="button" class="btn btn-info btn-block btn-sm mb-3">
+              Download Document
+            </b-button>
           </b-col>
         </b-row>
       </b-card-header>
@@ -46,20 +36,27 @@
           <a :href="value" target="_blank">File</a>
         </template>
 
-        <template #cell(total)="{ value }">
-          {{ $n(exchange(value), 'currency', getExchangeLocale) }}
+        <template #cell(status)="{ item }">
+          <span v-if="item.winning_vendor" class="text-success">PO done</span>
+          <span v-else class="text-danger">Waiting vendor agree</span>
         </template>
 
-        <template #cell(action)="{ item }">
-          <router-link
-            :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }"
-            class="btn btn-info btn-sm">
-            Edit
-          </router-link>
-          <router-link :to="{ name: 'purchase-request-edit', params: { id: item.id } }" class="btn btn-danger btn-sm">
-            Delete
-          </router-link>
+        <template #cell(winning_vendor)="{ value }">
+          {{ value ? value.name : '-' }}
         </template>
+
+        <template #cell(winning_vendor_price)="{ value }">
+          {{ value ? $n(exchange(value), 'currency', getExchangeLocale) : '-' }}
+        </template>
+
+        <template #cell(winning_vendor_stock)="{ value }">
+          {{ value ? value : '-' }}
+        </template>
+
+        <template #cell(winning_vendor_incoterms)="{ value }">
+          {{ value ? value : '-' }}
+        </template>
+
       </b-table>
     </b-card>
 
@@ -99,10 +96,10 @@ export default {
           key: 'quantity',
           label: 'QTY',
         },
-        {
-          key: 'vendor.name',
-          label: 'Proposed Supplier',
-        },
+        // {
+        //   key: 'vendor.name',
+        //   label: 'Proposed Supplier',
+        // },
         {
           key: 'price',
           label: 'Unit Price',
@@ -120,13 +117,33 @@ export default {
           label: 'File',
         },
         {
-          key: 'total',
-          label: 'Total Value',
+          key: 'status',
+          label: 'Status',
         },
         {
-          key: 'action',
-          label: 'Action',
+          key: 'winning_vendor',
+          label: 'Vendor',
         },
+        {
+          key: 'winning_vendor_price',
+          label: 'Vendor Price',
+        },
+        {
+          key: 'winning_vendor_stock',
+          label: 'Vendor Stock',
+        },
+        {
+          key: 'winning_vendor_incoterms',
+          label: 'Vendor Incoterms',
+        },
+        // {
+        //   key: 'total',
+        //   label: 'Total Value',
+        // },
+        // {
+        //   key: 'action',
+        //   label: 'Action',
+        // },
       ],
     }
   },

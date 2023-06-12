@@ -39,6 +39,12 @@
           {{ $n(exchange(value), 'currency', getExchangeLocale) }}
         </template>
 
+        <template #cell(incoterms)="{ item }">
+          <b-form-select v-if="status && status.title == 'waiting rfq response'" size="sm" v-model="item.incoterms"
+            :options="incoterms"></b-form-select>
+          <span v-else>{{ item.incoterms }}</span>
+        </template>
+
         <template #cell(action)="{ item }">
           <vue-tags-input v-if="status && status.title == 'waiting rfq response'" v-model="item.tag" :tags="item.tags"
             :add-only-from-autocomplete="true" placeholder="add vendor" :autocomplete-items="filteredVendors(item)"
@@ -52,10 +58,26 @@
           <b-card>
             <b-form-group v-slot="{ ariaDescribedby }">
 
+              <b-row class="mb-4 pb-2 border-bottom">
+                <b-col class=""><b>Vendor Name</b></b-col>
+                <b-col class=""><b>Vendor Price</b></b-col>
+                <b-col class=""><b>Vendor Stock</b></b-col>
+                <b-col class=""><b>Incoterms</b></b-col>
+                <b-col class=""><b>Aggrement</b></b-col>
+                <b-col class=""><b>Choice</b></b-col>
+              </b-row>
+
               <b-row v-for="(requestQuotation, index) in row.item.request_quotation" :key="index" class="mb-2">
                 <b-col class=""><b>{{ requestQuotation.vendor.name }}</b></b-col>
                 <b-col>{{ requestQuotation.vendor_price ? requestQuotation.vendor_price : '-' }}</b-col>
                 <b-col>{{ requestQuotation.vendor_stock ? requestQuotation.vendor_stock : '-' }}</b-col>
+                <b-col>{{ requestQuotation.vendor_incoterms ? requestQuotation.vendor_incoterms : '-' }}</b-col>
+                <b-col>
+                  {{
+                    requestQuotation.vendor_is_agree != null ? (requestQuotation.vendor_is_agree ? 'Accept PO' : 'Refuse PO'
+                  ) : '-'
+                  }}
+                </b-col>
                 <b-col>
                   <b-form-radio v-if="status && status.title == 'waiting rfq approval'"
                     v-model="row.item.request_quotation_selected" :aria-describedby="ariaDescribedby"
@@ -85,12 +107,14 @@
               Send Approval
             </button>
             <template v-if="status && status.title == 'waiting po confirmation'">
-              <button type=" button" class="btn btn-danger btn-sm mb-3" @click="onReject()">
-                Reject
-              </button>
-              <button type=" button" class="btn btn-success btn-sm mb-3 ml-2" @click="onApprove()">
-                Approve
-              </button>
+              <div v-show="permissions.includes('procurement rfq approval')">
+                <button type=" button" class="btn btn-danger btn-sm mb-3" @click="onReject()">
+                  Reject
+                </button>
+                <button type=" button" class="btn btn-success btn-sm mb-3 ml-2" @click="onApprove()">
+                  Approve
+                </button>
+              </div>
             </template>
           </b-col>
         </b-row>
@@ -111,6 +135,20 @@ export default {
       loading: false,
       code: null,
       status: null,
+      permissions: [],
+      incoterms: [
+        'Ex-Works or Ex-Warehouse',
+        'Free to Carrier',
+        'Free Alongside Ship',
+        'Free On Board',
+        'Cost and Freight',
+        'Cost, Insurance and Freight',
+        'Carriage Paid To',
+        'Carriage And Insurance Paid To',
+        'Delivered At Place',
+        'Delivered At Place Unloaded',
+        'Delivered Duty Paid'
+      ],
       items: [],
       fields: [
         {
@@ -158,6 +196,10 @@ export default {
           label: 'Total Value',
         },
         {
+          key: 'incoterms',
+          label: 'Incoterms',
+        },
+        {
           key: 'action',
           label: 'Vendor',
         },
@@ -168,6 +210,7 @@ export default {
   mounted() {
     this.getItems()
     this.getVendors()
+    this.permissions = JSON.parse(localStorage.getItem("permissions"))
   },
   computed: {
     ...mapGetters(["getRate", "getExchangeLocale"]),
@@ -186,6 +229,7 @@ export default {
       this.items = data.data.items.map(item => {
         item.tag = ''
         item.tags = []
+        if (item.incoterms == null) item.incoterms = 'Free to Carrier'
         item._showDetails = false
         item.request_quotation_selected = null
         return item
@@ -218,6 +262,7 @@ export default {
         let items = this.items.map(item => {
           return {
             id: item.id,
+            incoterms: item.incoterms,
             vendors: item.tags.map(tag => {
               return this.vendors.find(vendor => vendor.name.toLowerCase() === tag.text.toLowerCase()).id
             })

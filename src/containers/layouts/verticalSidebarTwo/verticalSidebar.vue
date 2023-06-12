@@ -1,18 +1,11 @@
 <template>
-  <vue-perfect-scrollbar
-    class="sidebar-panel rtl-ps-none ps scroll"
-    @mouseleave.native="sidebarCompact();returnSelectedParentMenu()"
-    @mouseenter.native="removeSidebarCompact"
-    :class="{
+  <vue-perfect-scrollbar class="sidebar-panel rtl-ps-none ps scroll"
+    @mouseleave.native="sidebarCompact(); returnSelectedParentMenu()" @mouseenter.native="removeSidebarCompact" :class="{
       'vertical-sidebar-compact': getVerticalCompact.isSidebarCompact,
       'sidebar-full-collapse': getVerticalSidebar.isMobileCompact
-    }"
-    :settings="{ suppressScrollX : true ,  wheelPropagation: false}"
-  >
+    }" :settings="{ suppressScrollX: true, wheelPropagation: false }">
     <div>
-      <div
-        class="gull-brand text-center d-flex align-items-center pl-2 mb-2 justify-content-between"
-      >
+      <div class="gull-brand text-center d-flex align-items-center pl-2 mb-2 justify-content-between">
         <div>
           <img class src="@/assets/images/logo.png" />
         </div>
@@ -29,19 +22,14 @@
               <div v-b-toggle="'collapse-' + index">
                 <a class="has-arrow" href="#" :class="{ active: selectedParentMenu == 'pages' }">
                   <i v-if="link.icon" :class="['nav-icon text-17 mr-3', link.icon]"></i>
-                  <span
-                    class="text-14"
-                    :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
-                  >{{ link.title }}</span>
+                  <span class="text-14" :class="{ 'vertical-item-name': getVerticalCompact.isItemName }">{{ link.title
+                  }}</span>
                   <arrowIcon />
                 </a>
               </div>
               <b-collapse :id="'collapse-' + index">
-                <ul
-                  class="Ul_collapse"
-                  :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
-                >
-                  <li v-for="(child, i) in link.children" class="item-name">
+                <ul class="Ul_collapse" :class="{ 'vertical-item-name': getVerticalCompact.isItemName }">
+                  <li v-for="(child, i) in link.children" :key="i" class="item-name">
                     <router-link tag="a" :to="child.url" class href="">
                       <i v-if="child.icon" :class="['nav-icon', child.icon]"></i>
                       <span class="item-name ml-1">{{ child.title }}</span>
@@ -50,14 +38,13 @@
                 </ul>
               </b-collapse>
             </li>
-            <p v-else-if="link.type == 'header'" v-show="checkPermission(link.permission)" class="main-menu-title text-uppercase text-12 mt-4 mb-2">{{ link.title }}</p>
+            <p v-else-if="link.type == 'header'" v-show="checkPermission(link.permission)"
+              class="main-menu-title text-uppercase text-12 mt-4 mb-2">{{ link.title }}</p>
             <li v-else-if="link.type == 'link'" v-show="checkPermission(link.permission)" class="Ul_li--hover">
-              <router-link tag="a" :to="link.url"  class="has-arrow" href="">
+              <router-link tag="a" :to="link.url" class="has-arrow" href="">
                 <i v-if="link.icon" :class="['nav-icon text-17 mr-3', link.icon]"></i>
-                <span
-                  class="text-14"
-                  :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
-                >{{ link.title }}</span>
+                <span class="text-14" :class="{ 'vertical-item-name': getVerticalCompact.isItemName }">{{ link.title
+                }}</span>
               </router-link>
             </li>
           </template>
@@ -324,7 +311,7 @@ export default {
     this.permissions = JSON.parse(localStorage.getItem("permissions"))
   },
   beforeDestroy() {
-    document.removeEventListener("click", this.returnSelectedParentMenu);
+    document.removeEventListener("click", this.returnSelectedParentMenu)
   },
   methods: {
     ...mapActions([
@@ -354,5 +341,4 @@ export default {
   },
 };
 </script>
-<style>
-</style>
+<style></style>

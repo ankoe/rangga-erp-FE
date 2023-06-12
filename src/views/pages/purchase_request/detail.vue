@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Blank'" :folder="'Pages'" />
+    <breadcumb :page="code" :folder="'Purchase Request'" />
 
     <b-card class="wrapper mb-4">
       <b-card-header>
@@ -82,7 +82,6 @@
           </b-col>
         </b-row>
       </b-card-footer>
-
     </b-card>
 
     <b-card class="wrapper mb-4">
@@ -100,10 +99,6 @@
               </div>
             </template>
 
-            <template #cell(role)="{ value }">
-              {{ value.display_name }}
-            </template>
-
             <template #cell(approve_user)="{ value }">
               <template v-if="value">
                 {{ value.name }}
@@ -113,7 +108,7 @@
 
             <template #cell(approved_at)="{ value }">
               <template v-if="value">
-                {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
+                {{ value }}
               </template>
               <template v-else>-</template>
             </template>
@@ -131,10 +126,6 @@
                 <b-spinner class="align-middle"></b-spinner>
                 <strong>Loading...</strong>
               </div>
-            </template>
-
-            <template #cell(role)="{ value }">
-              {{ value.display_name }}
             </template>
 
             <template #cell(user)="{ value }">
@@ -168,6 +159,7 @@ export default {
       approvals: [],
       approvalHistories: [],
       id: null,
+      code: null,
       total: null,
       status: null,
       fieldItems: [
@@ -234,7 +226,11 @@ export default {
           label: 'Order',
         },
         {
-          key: 'role',
+          key: 'role.group',
+          label: 'Group',
+        },
+        {
+          key: 'role.display_name',
           label: 'Role',
         },
         {
@@ -248,7 +244,11 @@ export default {
       ],
       fieldApprovalHistories: [
         {
-          key: 'role',
+          key: 'role.group',
+          label: 'Group',
+        },
+        {
+          key: 'role.display_name',
           label: 'Role',
         },
         {
@@ -288,6 +288,7 @@ export default {
       let { data } = await this.axios.get('purchase-request/' + this.$route.params.id)
 
       this.id = data.data.id
+      this.code = data.data.code
       this.total = data.data.total
       this.status = data.data.status
       this.items = data.data.items

@@ -115,14 +115,16 @@ export default {
     },
     async getFilterOptions() {
       let { data } = await this.axios.get('purchase-request-status/all')
-      this.filter.options = data.map(option => {
-        return { value: option.id, text: option.description }
-      })
+      this.filter.options = data
+        .filter(option => option.title != 'draft')
+        .map(option => {
+          return { value: option.id, text: option.description }
+        })
     },
     async getItems(page) {
       this.loading = true
       page = page ?? 1
-      let { data } = await this.axios.get('procurement/purchase-request?page=' + page)
+      let { data } = await this.axios.get('procurement/purchase-request?page=' + page, { params: { purchase_request_status_id: this.filter.selected } })
 
       this.items = data.data
       this.meta.total = data.meta.total

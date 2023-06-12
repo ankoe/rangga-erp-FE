@@ -1,18 +1,17 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Purchase Request'" :folder="'Approval'" />
+    <breadcumb :page="code" :folder="'Purchase Request'" />
 
-    <b-card class="wrapper">
+    <b-card class="wrapper mb-4">
       <b-card-header>
         <b-row>
           <b-col lg="3" class="mt-auto">
             <h5>Total : {{ $n(exchange(total), 'currency', getExchangeLocale) }}</h5>
-
           </b-col>
         </b-row>
       </b-card-header>
 
-      <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
+      <b-table striped hover :items="items" :fields="fieldItems" responsive="sm" :busy="loading" show-empty>
         <template #empty>
           Data not found or empty
         </template>
@@ -55,7 +54,63 @@
           </b-col>
         </b-row>
       </b-card-footer>
+    </b-card>
 
+    <b-card class="wrapper mb-4">
+      <b-row>
+        <b-col md="6">
+          <h4 class="mb-3">Approval Sequence</h4>
+          <b-table striped hover :items="approvals" :fields="fieldApprovals" responsive="sm" :busy="loading" show-empty>
+            <template #empty>
+              Data not found or empty
+            </template>
+            <template #table-busy>
+              <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+
+            <template #cell(approve_user)="{ value }">
+              <template v-if="value">
+                {{ value.name }}
+              </template>
+              <template v-else>-</template>
+            </template>
+
+            <template #cell(approved_at)="{ value }">
+              <template v-if="value">
+                {{ value }}
+              </template>
+              <template v-else>-</template>
+            </template>
+          </b-table>
+        </b-col>
+        <b-col md="6">
+          <h4 class="mb-3">Approval History</h4>
+          <b-table striped hover :items="approvalHistories" :fields="fieldApprovalHistories" responsive="sm"
+            :busy="loading" show-empty>
+            <template #empty>
+              Data not found or empty
+            </template>
+            <template #table-busy>
+              <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+
+            <template #cell(user)="{ value }">
+              {{ value.name }}
+            </template>
+
+            <template #cell(remarks)="{ value }">
+              {{ value ? value : '-' }}
+            </template>
+
+          </b-table>
+        </b-col>
+      </b-row>
     </b-card>
 
   </div>
@@ -73,10 +128,13 @@ export default {
     return {
       loading: false,
       items: [],
+      approvals: [],
+      approvalHistories: [],
       id: null,
+      code: null,
       total: null,
       status: null,
-      fields: [
+      fieldItems: [
         {
           key: 'material.number',
           label: 'Material Number',
@@ -122,6 +180,54 @@ export default {
           label: 'Total Value',
         },
       ],
+      fieldApprovals: [
+        {
+          key: 'order',
+          label: 'Order',
+        },
+        {
+          key: 'role.group',
+          label: 'Group',
+        },
+        {
+          key: 'role.display_name',
+          label: 'Role',
+        },
+        {
+          key: 'approve_user',
+          label: 'Approve User',
+        },
+        {
+          key: 'approved_at',
+          label: 'Approved At',
+        },
+      ],
+      fieldApprovalHistories: [
+        {
+          key: 'role.group',
+          label: 'Group',
+        },
+        {
+          key: 'role.display_name',
+          label: 'Role',
+        },
+        {
+          key: 'user',
+          label: 'User',
+        },
+        {
+          key: 'approved_at',
+          label: 'Approve At',
+        },
+        {
+          key: 'approve_status',
+          label: 'Status',
+        },
+        {
+          key: 'remarks',
+          label: 'Remarks',
+        },
+      ],
     }
   },
   mounted() {
@@ -139,9 +245,12 @@ export default {
       let { data } = await this.axios.get('office/purchase-request/' + this.$route.params.id)
 
       this.id = data.data.id
+      this.code = data.data.code
       this.total = data.data.total
       this.status = data.data.status
       this.items = data.data.items
+      this.approvals = data.data.approvals.sort((x, y) => x.order - y.order)
+      this.approvalHistories = data.data.approval_histories
 
       this.loading = false
     },
