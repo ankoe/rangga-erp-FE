@@ -50,11 +50,9 @@
   </vue-perfect-scrollbar>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
-import arrowIcon from "@/components/arrow/arrowIcon";
+import { mapGetters, mapActions } from "vuex"
 export default {
   components: {
-    arrowIcon,
   },
   computed: {
     ...mapGetters(["getVerticalCompact", "getVerticalSidebar"]),
@@ -86,7 +84,6 @@ export default {
 
       if (currentParentUrl !== undefined || currentParentUrl !== null) {
         this.selectedParentMenu = currentParentUrl.toLowerCase();
-        console.log(currentParentUrl);
       } else {
         this.selectedParentMenu = "dashboards";
       }

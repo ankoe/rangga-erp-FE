@@ -121,7 +121,6 @@ export default {
           label: 'Vendor Incoterms',
         }
       ],
-      vendors: [],
     }
   },
   mounted() {
@@ -141,30 +140,36 @@ export default {
       this.code = data.data.code
       this.status = data.data.status
 
-      this.items = data.data.map(item => {
-        return item
-      })
+      this.items = data.data
+        .map(item => {
+          let result = item.request_quotation.find(requestQuotation => requestQuotation.vendor.slug == this.$route.params.slug)
+          item.requestQuotationId = result.id
+          item.vendor_price = result.vendor_price ? result.vendor_price : null
+          item.vendor_stock = result.vendor_stock ? result.vendor_stock : null
+          item.vendor_incoterms = result.vendor_incoterms ? result.vendor_incoterms : 'Free On Board'
+          return item
+        })
 
       this.loading = false
     },
-    async onSubmitVendor() {
+    async onSubmitOffer() {
       let readySubmit = true
       await this.items.forEach(item => {
 
-        if (item.tags.length == 0) readySubmit = false
+        if (!item.vendor_price || !item.vendor_stock || !item.vendor_incoterms) readySubmit = false
       })
 
       if (readySubmit) {
         let items = this.items.map(item => {
           return {
-            id: item.id,
-            vendors: item.tags.map(tag => {
-              return this.vendors.find(vendor => vendor.name.toLowerCase() === tag.text.toLowerCase()).id
-            })
+            id: item.requestQuotationId,
+            vendor_price: parseInt(item.vendor_price),
+            vendor_stock: parseInt(item.vendor_stock),
+            vendor_incoterms: item.vendor_incoterms
           }
         })
 
-        let { data } = await this.axios.post(`procurement/request-for-quotation/${this.$route.params.id}/propose-vendor`, {
+        let { data } = await this.axios.post(`supplier/${this.$route.params.slug}/request-for-quotation/${this.$route.params.id}/send-offer`, {
           items: items
         })
 
@@ -176,61 +181,9 @@ export default {
         }
 
       } else {
-        alert('All items must have vendor!')
+        alert('All item field must be filled!')
       }
     },
-    async onSubmitApproval() {
-      let readySubmit = true
-      await this.items.forEach(item => {
-
-        if (item.request_quotation_selected == null) readySubmit = false
-      })
-
-      if (readySubmit) {
-        let items = this.items.map(item => {
-          return {
-            id: item.id,
-            selected_id: item.request_quotation_selected
-          }
-        })
-
-        let { data } = await this.axios.post(`procurement/request-for-quotation/${this.$route.params.id}/propose-approval`, {
-          items: items
-        })
-
-        if (data.status == "SUCCESS") {
-          alert(data.message)
-          this.getItems()
-        } else {
-          alert(data.message)
-        }
-
-      } else {
-        alert('All items must selected winning vendor!')
-      }
-    },
-    async onApprove() {
-
-      let { data } = await this.axios.get(`procurement/request-for-quotation/${this.$route.params.id}/set-approve`)
-
-      if (data.status == "SUCCESS") {
-        alert(data.message)
-        this.getItems()
-      } else {
-        alert(data.message)
-      }
-    },
-    async onReject() {
-
-      let { data } = await this.axios.get(`procurement/request-for-quotation/${this.$route.params.id}/set-reject`)
-
-      if (data.status == "SUCCESS") {
-        alert(data.message)
-        this.getItems()
-      } else {
-        alert(data.message)
-      }
-    }
   }
 }
 </script>
