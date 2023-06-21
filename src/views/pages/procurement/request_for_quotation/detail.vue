@@ -49,7 +49,7 @@
           <vue-tags-input v-if="status && status.title == 'waiting rfq response'" v-model="item.tag" :tags="item.tags"
             :add-only-from-autocomplete="true" placeholder="add vendor" :autocomplete-items="filteredVendors(item)"
             @tags-changed="newTags => item.tags = newTags" />
-          <b-button v-else size="sm" @click="item._showDetails = !item._showDetails">
+          <b-button v-else size="sm" @click="item._showDetails = !item._showDetails" class="py-1 px-2">
             {{ item._showDetails ? 'Hide' : 'Show' }} Details
           </b-button>
         </template>

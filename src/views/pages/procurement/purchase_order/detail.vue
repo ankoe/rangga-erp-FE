@@ -49,7 +49,7 @@
         </template>
 
         <template #cell(action)="{ item }">
-          <b-button v-if="item.winning_vendor" type="button" variant="success" size="sm"
+          <b-button v-if="item.winning_vendor" type="button" variant="success" size="sm" class="py-1 px-2"
             @click="onGeneratePO(item)">Download Dokumen PO</b-button>
           <span v-else>-</span>
         </template>

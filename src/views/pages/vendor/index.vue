@@ -25,9 +25,10 @@
         </template>
 
         <template #cell(action)="{ item }">
-          <router-link :to="{ name: 'vendor-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
+          <router-link :to="{ name: 'vendor-edit', params: { id: item.id } }" class="btn btn-info btn-sm py-1 px-2">
             Edit
           </router-link>
+          <b-button size="sm" variant="danger" class="ml-1 py-1 px-2" @click="onDelete(item)">Hapus</b-button>
         </template>
       </b-table>
 
@@ -95,7 +96,12 @@ export default {
       this.meta.currentPage = data.meta.current_page
 
       this.loading = false
-    }
+    },
+    async onDelete(item) {
+      let { data } = await this.axios.delete('vendor/' + item.id)
+
+      this.getItems()
+    },
   }
 }
 </script>

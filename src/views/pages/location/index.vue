@@ -23,10 +23,20 @@
             <strong>Loading...</strong>
           </div>
         </template>
+        <template #cell(email)="{ value }">
+          {{ value ? value : '-' }}
+        </template>
+        <template #cell(mobile)="{ value }">
+          {{ value ? value : '-' }}
+        </template>
+        <template #cell(address)="{ value }">
+          {{ value ? value : '-' }}
+        </template>
         <template #cell(action)="{ item }">
-          <router-link :to="{ name: 'location-edit', params: { id: item.id } }" class="btn btn-info btn-sm">
+          <router-link :to="{ name: 'location-edit', params: { id: item.id } }" class="btn btn-info btn-sm py-1 px-2">
             Edit
           </router-link>
+          <b-button size="sm" variant="danger" class="ml-1 py-1 px-2" @click="onDelete(item)">Hapus</b-button>
         </template>
       </b-table>
 
@@ -98,7 +108,12 @@ export default {
       this.meta.currentPage = data.meta.current_page
 
       this.loading = false
-    }
+    },
+    async onDelete(item) {
+      let { data } = await this.axios.delete('branch/' + item.id)
+
+      this.getItems()
+    },
   }
 }
 </script>

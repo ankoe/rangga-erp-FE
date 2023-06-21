@@ -57,10 +57,10 @@
           <div v-if="isEditable">
             <router-link
               :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }"
-              class="btn btn-info btn-sm">
+              class="btn btn-info btn-sm py-1 px-2">
               Edit
             </router-link>
-            <button type="button" class="btn btn-danger btn-sm" @click="onDeleteItem(item)">
+            <button type="button" class="btn btn-danger btn-sm py-1 px-2" @click="onDeleteItem(item)">
               Delete
             </button>
           </div>

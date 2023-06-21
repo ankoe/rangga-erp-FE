@@ -25,10 +25,12 @@
         </template>
 
         <template #cell(action)="{ item }">
-          <router-link v-if="!item.is_default" :to="{ name: 'role-edit', params: { id: item.id } }"
-            class="btn btn-info btn-sm">
-            Edit
-          </router-link>
+          <template v-if="!item.is_default">
+            <router-link :to="{ name: 'role-edit', params: { id: item.id } }" class="btn btn-info btn-sm py-1 px-2">
+              Edit
+            </router-link>
+            <b-button size="sm" variant="danger" class="ml-1 py-1 px-2" @click="onDelete(item)">Hapus</b-button>
+          </template>
           <span v-else class="font-italic small text-secondary">Cant be modify</span>
         </template>
       </b-table>
@@ -84,7 +86,12 @@ export default {
       this.meta.total = data.meta.total
       this.meta.perPage = data.meta.per_page
       this.meta.currentPage = data.meta.current_page
-    }
+    },
+    async onDelete(item) {
+      let { data } = await this.axios.delete('role/' + item.id)
+
+      this.getItems()
+    },
   }
 }
 </script>
