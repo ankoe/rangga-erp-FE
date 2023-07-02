@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Message'" :folder="'Vendor Access'" />
+    <breadcumb :page="'Message'" :folder="'Auth'" />
 
     <div class="messaging">
       <div class="inbox_msg">
@@ -14,7 +14,8 @@
                 <b-col sm="6">
                   <form @submit.prevent="filterRoom">
                     <b-input-group>
-                      <b-form-input placeholder="no RFQ" v-model="search"></b-form-input>
+                      <b-form-input :placeholder="getProfile.role_display_name == 'user' ? 'No PR' : 'No PR / no RFQ'"
+                        v-model="search"></b-form-input>
                       <b-input-group-append>
                         <b-button type="submit" variant="info"><i class="i-Data-Search"></i></b-button>
                       </b-input-group-append>
@@ -239,7 +240,7 @@ export default {
       let { data } = await this.axios.get('message/conversation/all', {
         params: {
           sender_user_id: this.getProfile.id,
-          sender_type: 'vendor'
+          sender_type: this.getProfile.role_display_name
         }
       })
 

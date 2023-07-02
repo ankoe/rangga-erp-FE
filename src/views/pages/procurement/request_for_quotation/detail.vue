@@ -79,6 +79,10 @@
                   }}
                 </b-col>
                 <b-col>
+                  <!-- belum pasti lokasi chatnya -->
+                  <button type="button" class="btn btn-link text-decoration-none" @click="openChat(requestQuotation)">
+                    <i class="i-Speach-Bubbles"></i>
+                  </button>
                   <b-form-radio v-if="status && status.title == 'waiting rfq approval'"
                     v-model="row.item.request_quotation_selected" :aria-describedby="ariaDescribedby"
                     :name="'request-quotation-' + requestQuotation.id" :value="requestQuotation.id">Pilih</b-form-radio>
@@ -132,6 +136,7 @@ export default {
   },
   data() {
     return {
+      id: null,
       loading: false,
       code: null,
       status: null,
@@ -223,6 +228,7 @@ export default {
       this.loading = true
       let { data } = await this.axios.get('procurement/request-for-quotation/' + this.$route.params.id)
 
+      this.id = data.data.id
       this.code = data.data.code
       this.status = data.data.status
 
@@ -254,7 +260,6 @@ export default {
     async onSubmitVendor() {
       let readySubmit = true
       await this.items.forEach(item => {
-
         if (item.tags.length == 0) readySubmit = false
       })
 
@@ -315,7 +320,6 @@ export default {
       }
     },
     async onApprove() {
-
       let { data } = await this.axios.get(`procurement/request-for-quotation/${this.$route.params.id}/set-approve`)
 
       if (data.status == "SUCCESS") {
@@ -326,7 +330,6 @@ export default {
       }
     },
     async onReject() {
-
       let { data } = await this.axios.get(`procurement/request-for-quotation/${this.$route.params.id}/set-reject`)
 
       if (data.status == "SUCCESS") {
@@ -335,6 +338,25 @@ export default {
       } else {
         alert(data.message)
       }
+    },
+    async openChat(requestQuotation) {
+      const conversation = {
+        requestQuotation: {
+          id: requestQuotation.id
+        },
+        purchaseRequest: {
+          id: this.id,
+          code: this.code
+        },
+        receiver: {
+          id: requestQuotation.vendor.id,
+          name: requestQuotation.vendor.name
+        },
+        type: 'vendor'
+      }
+
+      localStorage.setItem('conversation', JSON.stringify(conversation))
+      this.$router.push({ name: 'auth-message-index' })
     }
   }
 }

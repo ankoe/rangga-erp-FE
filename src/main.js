@@ -39,8 +39,8 @@ window.addEventListener('beforeunload', () => {
   store.commit('auth/setToken', store.state.auth.token)
 });
 
-// const baseUrl = 'http://127.0.0.1:8005'
-const baseUrl = 'http://api.haricar.com'
+const baseUrl = 'http://127.0.0.1:8000'
+// const baseUrl = 'https://api.haricar.com'
 axios.defaults.baseURL = baseUrl + '/api/'
 // firebase.initializeApp(firebaseSettings);
 // Axios Interceptor

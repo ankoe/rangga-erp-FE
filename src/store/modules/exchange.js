@@ -6,10 +6,10 @@ const state = {
 const getters = {
     getRate(state) {
         return (state.currency == 'idr')? 1 : (1/state.rate)
-    },    
+    },
     getExchangeLocale(state) {
         return (state.currency == 'idr')? 'id-ID' : 'en-US'
-    },    
+    },
 }
 
 const actions = {

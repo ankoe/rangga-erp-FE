@@ -43,6 +43,13 @@
                 Purchase Order
               </span>
             </router-link>
+          <li class="Ul_li--hover">
+            <router-link tag="a" :to="{ name: 'vendor-access-message-index' }" class="has-arrow" href="">
+              <i class="nav-icon i-Speach-Bubbles text-20 mr-2 text-muted"></i>
+              <span class="text-15 text-muted" :class="{ 'vertical-item-name': getVerticalCompact.isItemName }">
+                Message
+              </span>
+            </router-link>
           </li>
         </ul>
       </div>

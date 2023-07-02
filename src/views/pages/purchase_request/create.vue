@@ -112,8 +112,13 @@
               </b-row>
 
               <b-row class="mt-5">
-                <b-col offset="6" md="6" class="d-flex justify-content-end">
+                <b-col>
                   <button @click="addForm" type="button" class="btn btn-info btn-sm">Tambah</button>
+                </b-col>
+                <b-col class="d-flex justify-content-end">
+                  <router-link :to="{ name: 'purchase-request-index' }" class="btn btn-link btn-sm mr-1">
+                    Kembali
+                  </router-link>
                   <b-button class="ml-1" type="submit" variant="primary">Submit</b-button>
                 </b-col>
               </b-row>
@@ -257,16 +262,21 @@ export default {
       formData.append("file", form.file)
 
       await this.axios.post('purchase-request-item', formData)
+
     },
     async onSubmit() {
-      let purchaseRequestId = await this.storePurchaseRequest()
+      const { data } = await this.axios.get('purchase-request/get-pr-code')
 
-      if (purchaseRequestId) {
-        await this.forms.forEach(form => {
-          this.storePurchaseRequestItem(purchaseRequestId, form)
-        })
+      if (confirm('Apakah akan menyimpan no ' + data.data.code)) {
+        let purchaseRequestId = await this.storePurchaseRequest()
 
-        this.$router.push({ name: 'purchase-request-index' })
+        if (purchaseRequestId) {
+          await this.forms.forEach(form => {
+            this.storePurchaseRequestItem(purchaseRequestId, form)
+          })
+
+          this.$router.push({ name: 'purchase-request-index' })
+        }
       }
     },
     supplierModalReset() {

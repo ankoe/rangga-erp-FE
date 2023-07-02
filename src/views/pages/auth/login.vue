@@ -90,9 +90,6 @@ export default {
       })
 
       if (response.data.status == "SUCCESS") {
-        // sementara, harusnya lewat store
-        localStorage.setItem("name", response.data.data.name)
-        localStorage.setItem("permissions", JSON.stringify(response.data.data.permissions))
         this.syncRate()
         this.$router.push({ name: 'dashboard' })
       } else {

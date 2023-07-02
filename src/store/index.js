@@ -1,5 +1,6 @@
 import Vuex from "vuex";
 import Vue from "vue";
+import VuexPersistence from 'vuex-persist'
 import largeSidebar from "./modules/largeSidebar";
 import compactSidebar from "./modules/compactSidebar";
 // import chat from "./modules/chat";
@@ -30,4 +31,5 @@ export default new Vuex.Store({
     exchange,
     auth
   },
+  plugins: [new VuexPersistence().plugin]
 })

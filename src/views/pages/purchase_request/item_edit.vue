@@ -105,6 +105,10 @@
 
 
                 <b-col md="12" class="d-flex justify-content-end">
+                  <router-link :to="{ name: 'purchase-request-detail', params: { id: $route.params.id } }"
+                    class="btn btn-link btn-sm mt-3 mr-1">
+                    Kembali
+                  </router-link>
                   <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
                 </b-col>
               </b-row>

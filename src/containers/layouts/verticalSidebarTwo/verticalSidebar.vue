@@ -136,35 +136,35 @@ export default {
         {
           type: 'link',
           title: 'Pesan',
-          url: { name: 'procurement-message-index' },
+          url: { name: 'auth-message-index' },
           icon: 'i-Speach-Bubbles',
-          permission: 'procurement message',
+          permission: 'general',
         },
-        {
-          type: 'header',
-          title: 'Supplier'
-        },
-        {
-          type: 'link',
-          title: 'Offer',
-          url: { name: 'supplier-offer-index' },
-          icon: 'i-Letter-Open',
-          permission: 'vendor offer',
-        },
-        {
-          type: 'link',
-          title: 'Supplier Winner',
-          url: { name: 'supplier-winner-index' },
-          icon: 'i-Letter-Open',
-          permission: 'vendor offer',
-        },
-        {
-          type: 'link',
-          title: 'Pesan',
-          url: { name: 'supplier-message-index' },
-          icon: 'i-Speach-Bubbles',
-          permission: 'vendor offer',
-        },
+        // {
+        //   type: 'header',
+        //   title: 'Supplier'
+        // },
+        // {
+        //   type: 'link',
+        //   title: 'Offer',
+        //   url: { name: 'supplier-offer-index' },
+        //   icon: 'i-Letter-Open',
+        //   permission: 'vendor offer',
+        // },
+        // {
+        //   type: 'link',
+        //   title: 'Supplier Winner',
+        //   url: { name: 'supplier-winner-index' },
+        //   icon: 'i-Letter-Open',
+        //   permission: 'vendor offer',
+        // },
+        // {
+        //   type: 'link',
+        //   title: 'Pesan',
+        //   url: { name: 'supplier-message-index' },
+        //   icon: 'i-Speach-Bubbles',
+        //   permission: 'general',
+        // },
         // {
         //   type: 'header',
         //   title: 'Data',

@@ -12,6 +12,11 @@
           <b-col lg="3" class="mt-auto">
             <h5>Total : {{ $n(exchange(total), 'currency', getExchangeLocale) }}</h5>
           </b-col>
+          <b-col class="text-right">
+            <button type="button" class="btn btn-link text-decoration-none btn-lg" @click="openChat">
+              <i class="i-Speach-Bubbles"></i>
+            </button>
+          </b-col>
         </b-row>
       </b-card-header>
 
@@ -146,6 +151,7 @@ export default {
       items: [],
       approvals: [],
       approvalHistories: [],
+      user: null,
       id: null,
       code: null,
       total: null,
@@ -270,6 +276,7 @@ export default {
       this.total = data.data.total
       this.status = data.data.status
       this.items = data.data.items
+      this.user = data.data.user
       this.approvals = data.data.approvals.sort((x, y) => x.order - y.order)
       this.approvalHistories = data.data.approval_histories
 
@@ -304,6 +311,25 @@ export default {
         alert('All items must choose!')
       }
     },
+    async openChat() {
+      const conversation = {
+        requestQuotation: {
+          id: null
+        },
+        purchaseRequest: {
+          id: this.id,
+          code: this.code
+        },
+        receiver: {
+          id: this.user.id,
+          name: this.user.name
+        },
+        type: 'user'
+      }
+
+      localStorage.setItem('conversation', JSON.stringify(conversation))
+      this.$router.push({ name: 'auth-message-index' })
+    }
   }
 }
 </script>

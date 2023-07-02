@@ -264,11 +264,11 @@ const routes = [
         component: () => import("./views/pages/procurement/purchase_order/detail"),
       },
 
-      // Procurement: message
+      // message
       {
-        path: "procurement/mesage",
-        name: "procurement-message-index",
-        component: () => import("./views/pages/procurement/message"),
+        path: "mesage",
+        name: "auth-message-index",
+        component: () => import("./views/pages/message"),
       },
 
       // Vendor: Offer
@@ -294,14 +294,6 @@ const routes = [
         name: "supplier-winner-detail",
         component: () => import("./views/pages/supplier/supplier_winner/detail"),
       },
-
-      // Vendor: message
-      {
-        path: "supplier/mesage",
-        name: "supplier-message-index",
-        component: () => import("./views/pages/supplier/message"),
-      },
-
     ]
   },
 
@@ -374,6 +366,12 @@ const routes = [
         path: ":slug/purchase-order/:id",
         name: "vendor-access-purchase-order-detail",
         component: () => import("./views/pages/vendor_access/purchase_order/detail")
+      },
+      // Procurement: message
+      {
+        path: ":slug/mesage",
+        name: "vendor-access-message-index",
+        component: () => import("./views/pages/vendor_access/message"),
       },
     ]
   },
