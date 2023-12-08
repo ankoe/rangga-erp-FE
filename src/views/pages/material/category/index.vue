@@ -61,6 +61,10 @@ export default {
           label: 'Name',
         },
         {
+          key: 'taxonomy',
+          label: 'Taxonomy',
+        },
+        {
           key: 'action',
           label: 'Action',
         },

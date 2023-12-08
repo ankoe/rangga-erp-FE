@@ -81,6 +81,24 @@ export default {
         },
         {
           type: 'dropdown',
+          title: 'Material Request',
+          icon: 'i-Safe-Box1',
+          permission: 'purchase request',
+          children: [
+            {
+              title: 'List',
+              url: { name: 'material-request-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Create Request',
+              url: { name: 'material-request-create' },
+              icon: 'i-Add',
+            },
+          ]
+        },
+        {
+          type: 'dropdown',
           title: 'Purchase Request',
           icon: 'i-Safe-Box1',
           permission: 'purchase request',
@@ -202,6 +220,24 @@ export default {
             {
               title: 'Add',
               url: { name: 'material-category-create' },
+              icon: 'i-Add',
+            },
+          ]
+        },
+        {
+          type: 'dropdown',
+          title: 'Unit',
+          icon: 'i-Safe-Box1',
+          permission: 'unit',
+          children: [
+            {
+              title: 'List',
+              url: { name: 'unit-index' },
+              icon: 'i-Safe-Box1',
+            },
+            {
+              title: 'Add',
+              url: { name: 'unit-create' },
               icon: 'i-Add',
             },
           ]

@@ -24,10 +24,10 @@
           </div>
         </template>
         <template #cell(email)="{ value }">
-          {{ value ? value : '-' }}
+          {{ value ? value.join(', ') : '-' }}
         </template>
         <template #cell(mobile)="{ value }">
-          {{ value ? value : '-' }}
+          {{ value ? value.join(', ') : '-' }}
         </template>
         <template #cell(address)="{ value }">
           {{ value ? value : '-' }}
@@ -81,6 +81,14 @@ export default {
           label: 'Mobile',
         },
         {
+          key: 'city',
+          label: 'City',
+        },
+        {
+          key: 'postal_code',
+          label: 'Postal Code',
+        },
+        {
           key: 'action',
           label: 'Action',
         },
@@ -110,7 +118,7 @@ export default {
       this.loading = false
     },
     async onDelete(item) {
-      let { data } = await this.axios.delete('branch/' + item.id)
+      await this.axios.delete('branch/' + item.id)
 
       this.getItems()
     },

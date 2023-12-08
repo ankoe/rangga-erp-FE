@@ -71,17 +71,17 @@ export default {
       items: [],
       fields: [
         {
-          key: 'code',
+          key: 'code_rfq',
           label: 'Number',
         },
-        {
-          key: 'user.name',
-          label: 'Username',
-        },
-        {
-          key: 'status.description',
-          label: 'Status',
-        },
+        // {
+        //   key: 'user.name',
+        //   label: 'Username',
+        // },
+        // {
+        //   key: 'status.description',
+        //   label: 'Status',
+        // },
         {
           key: 'created_at',
           label: 'Created PR',

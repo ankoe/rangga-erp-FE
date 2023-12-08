@@ -22,15 +22,30 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="Material Category*" label-for="input-1" class="col-md-6">
-                  <ValidationProvider ref="category" name="Material Category" rules="required" v-slot="{ errors }">
-                    <b-form-select v-model="form.material_category_id" :options="materialCategories"
-                      id="inline-form-custom-select-pref1">
-                      <template #first>
-                        <b-form-select-option :value="null" disabled>-- Please select material category
-                          --</b-form-select-option>
-                      </template>
-                    </b-form-select>
+                <b-form-group class="col-md-6 mb-3" label="Email CC (multiple)*" label-for="input-1">
+                  <ValidationProvider ref="emailCc" name="Email CC" rules="" v-slot="{ errors }">
+                    <vue-tags-input v-model="form.emailCc" :tags="form.emailCcs"
+                      @tags-changed="newEmailCcs => form.emailCcs = newEmailCcs" class="tag-custom border rounded"
+                      placeholder="input multiple email CC" />
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
+
+                <b-form-group class="col-md-6 mb-3" label="Phone (multiple)*" label-for="input-1">
+                  <ValidationProvider ref="mobile" name="Phone" rules="" v-slot="{ errors }">
+                    <vue-tags-input v-model="form.mobile" :tags="form.mobiles"
+                      @tags-changed="newMobiles => form.mobiles = newMobiles" class="tag-custom border rounded"
+                      placeholder="input multiple phone" />
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
+
+                <b-form-group label="Material Category (multiple)*" label-for="input-1" class="col-md-6 mb-3">
+                  <ValidationProvider ref="category" name="Material Category" rules="" v-slot="{ errors }">
+                    <vue-tags-input v-model="form.category" :tags="form.categories"
+                      @tags-changed="newCategories => form.categories = newCategories"
+                      :autocomplete-items="filteredCategories" :add-only-from-autocomplete="true"
+                      class="tag-custom border rounded" placeholder="select material categories" />
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
@@ -58,7 +73,12 @@ export default {
       form: {
         name: null,
         email: null,
-        material_category_id: null,
+        category: '',
+        categories: [],
+        emailCc: '',
+        emailCcs: [],
+        mobile: '',
+        mobiles: []
       },
       materialCategories: []
     }
@@ -66,12 +86,21 @@ export default {
   mounted() {
     this.getMaterialCategories()
   },
+  computed: {
+    filteredCategories() {
+      return this.materialCategories.filter(category => {
+        return category.text.toLowerCase().indexOf(this.form.category.toLowerCase()) !== -1;
+      });
+    },
+  },
   methods: {
     async onSubmit() {
       let { data } = await this.axios.post('vendor', {
         name: this.form.name,
         email: this.form.email,
-        material_category_id: this.form.material_category_id
+        material_categories: this.form.categories.map(tag => tag.value),
+        email_ccs: this.form.emailCcs.map(tag => tag.text),
+        mobiles: this.form.mobiles.map(tag => tag.text)
       }, {
         headers: { Authorization: 'Bearer ' + this.token }
       })
@@ -80,9 +109,15 @@ export default {
         alert(data.message)
         this.$router.push({ name: 'vendor-index' })
       } else {
-        this.$refs.name.applyResult({ errors: data.data.name ?? [] })
-        this.$refs.email.applyResult({ errors: data.data.email ?? [] })
-        this.$refs.category.applyResult({ errors: data.data.material_category_id ?? [] })
+        if (data.data) {
+          this.$refs.name.applyResult({ errors: data.data.name ?? [] })
+          this.$refs.email.applyResult({ errors: data.data.email ?? [] })
+          this.$refs.category.applyResult({ errors: data.data.material_categories ?? [] })
+          this.$refs.mobile.applyResult({ errors: data.data.mobiles ?? [] })
+          this.$refs.emailCc.applyResult({ errors: data.data.email_ccs ?? [] })
+        } else {
+          alert(data.message)
+        }
       }
     },
     async getMaterialCategories() {
@@ -97,3 +132,9 @@ export default {
   }
 };
 </script>
+
+<style lang="css">
+.vue-tags-input.ti-focus .ti-input {
+  border: 1px solid #ebde6e;
+}
+</style>

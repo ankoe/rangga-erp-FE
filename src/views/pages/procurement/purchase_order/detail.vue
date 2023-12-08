@@ -27,11 +27,6 @@
           <a :href="value" target="_blank">File</a>
         </template>
 
-        <template #cell(status)="{ item }">
-          <span v-if="item.winning_vendor" class="text-success">PO done</span>
-          <span v-else class="text-danger">Waiting vendor agree</span>
-        </template>
-
         <template #cell(winning_vendor)="{ value }">
           {{ value ? value.name : '-' }}
         </template>
@@ -41,7 +36,7 @@
         </template>
 
         <template #cell(winning_vendor_stock)="{ value }">
-          {{ value ? value : '-' }}
+          {{ value ? $n(value, 'numbering', getExchangeLocale) : '-' }}
         </template>
 
         <template #cell(winning_vendor_incoterms)="{ value }">
@@ -112,10 +107,6 @@ export default {
         {
           key: 'file',
           label: 'File',
-        },
-        {
-          key: 'status',
-          label: 'Status',
         },
         {
           key: 'winning_vendor',

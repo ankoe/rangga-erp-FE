@@ -32,12 +32,5 @@ export default {
   computed: {
     ...mapGetters(["getVerticalSidebar"])
   },
-  mounted() {
-    if (!localStorage.getItem("token")) this.$router.push({ name: 'login' })
-  },
-  data() {
-    return {};
-  },
-  methods: {}
 };
 </script>

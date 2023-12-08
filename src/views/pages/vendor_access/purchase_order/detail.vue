@@ -15,16 +15,20 @@
           </div>
         </template>
 
+        <template #cell(quantity)="{ value }">
+          {{ $n(value, 'numbering', getExchangeLocale) }}
+        </template>
+
+        <template #cell(vendor_stock)="{ value }">
+          {{ $n(value, 'numbering', getExchangeLocale) }}
+        </template>
+
         <template #cell(expected_at)="{ value }">
           {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
         </template>
 
         <template #cell(file)="{ value }">
           <a :href="value" target="_blank">File</a>
-        </template>
-
-        <template #cell(vendor_is_agree)="{ value }">
-          {{ typeof value === 'boolean' ? value : '-' }}
         </template>
       </b-table>
 
@@ -102,14 +106,6 @@ export default {
         {
           key: 'vendor_incoterms',
           label: 'Vendor Incoterms',
-        },
-        {
-          key: 'is_selected',
-          label: 'Is Selected',
-        },
-        {
-          key: 'vendor_is_agree',
-          label: 'Vendor Is Agree',
         },
       ],
     }

@@ -11,7 +11,7 @@
                 <b-form-group label="Material Category*" label-for="input-1" class="col-md-6 mb-3">
                   <ValidationProvider ref="category" name="Material Category" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.material_category_id" :options="materialCategories"
-                      id="inline-form-custom-select-pref1">
+                      @change="requestNumber" id="inline-form-custom-select-pref1">
                       <template #first>
                         <b-form-select-option :value="null" disabled>-- Please select material category
                           --</b-form-select-option>
@@ -26,15 +26,20 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="Number*" label-for="input-1">
-                  <ValidationProvider ref="number" name="Number" rules="required|max:30" v-slot="{ errors }">
-                    <b-form-input v-model="form.number" type="text" placeholder="Number"></b-form-input>
+                <b-form-group class="col-md-6 mb-3" label="Number" label-for="input-1">
+                  <ValidationProvider ref="number" name="Number" rules="required" v-slot="{ errors }">
+                    <b-form-input v-model="form.number" type="text" placeholder="Number" readonly></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
                 <b-form-group class="col-md-6 mb-3" label="UOM*" label-for="input-1">
-                  <ValidationProvider ref="uom" name="UOM" rules="required|max:20" v-slot="{ errors }">
-                    <b-form-input v-model="form.uom" type="text" placeholder="UOM"></b-form-input>
+                  <ValidationProvider ref="unit" name="UOM" rules="required" v-slot="{ errors }">
+                    <b-form-select v-model="form.unit_id" :options="units" id="inline-form-custom-select-pref2">
+                      <template #first>
+                        <b-form-select-option :value="null" disabled>-- Please select UOM
+                          --</b-form-select-option>
+                      </template>
+                    </b-form-select>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
@@ -48,9 +53,8 @@
                   </ValidationProvider>
                 </b-form-group>
                 <b-form-group class="col-md-6 mb-3" label="Stock*" label-for="input-1">
-                  <ValidationProvider ref="stock" name="Stock" rules="required|numeric|max_value:99999999"
-                    v-slot="{ errors }">
-                    <b-form-input v-model="form.stock" type="text" placeholder="Stock"></b-form-input>
+                  <ValidationProvider ref="stock" name="Stock" rules="required|max_value:99999999" v-slot="{ errors }">
+                    <money v-model="form.stock" type="text" placeholder="Stock" class="form-control" v-bind="money" />
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
@@ -59,6 +63,14 @@
                   <ValidationProvider ref="description" name="Description" rules="required" v-slot="{ errors }">
                     <b-form-textarea v-model="form.description" rows="5" no-resize
                       placeholder="Description"></b-form-textarea>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
+
+                <b-form-group label="Attachment*" label-for="input-1" class="col-md-6">
+                  <ValidationProvider ref="attachment" name="Attachment" rules="required" v-slot="{ errors }">
+                    <b-form-file v-model="form.attachment"
+                      accept=".jpg, .png, .jpeg, .pdf, .doc, .docx, .xls, .xlsx"></b-form-file>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
@@ -87,26 +99,39 @@ export default {
         name: null,
         number: null,
         description: null,
-        uom: null,
-        price: null,
-        stock: null,
+        unit_id: null,
+        price: 0,
+        stock: 0,
+        attachment: null
       },
-      materialCategories: []
+      money: {
+        decimal: ',',
+        precision: 2,
+      },
+      materialCategories: [],
+      units: []
     }
   },
   mounted() {
     this.getMaterialCategories()
+    this.getUnits()
   },
   methods: {
     async onSubmit() {
-      let { data } = await this.axios.post('material', {
-        material_category_id: this.form.material_category_id,
-        name: this.form.name,
-        number: this.form.number,
-        description: this.form.description,
-        uom: this.form.uom,
-        price: this.form.price,
-        stock: this.form.stock,
+      const formData = new FormData()
+      formData.append('material_category_id', this.form.material_category_id)
+      formData.append('name', this.form.name)
+      formData.append('number', this.form.number)
+      formData.append('description', this.form.description)
+      formData.append('unit_id', this.form.unit_id)
+      formData.append('price', this.form.price)
+      formData.append('stock', this.form.stock)
+      formData.append('attachment', this.form.attachment)
+
+      let { data } = await this.axios.post('material', formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
       })
 
       if (data.status == "SUCCESS") {
@@ -118,9 +143,10 @@ export default {
           this.$refs.name.applyResult({ errors: data.data.name ?? [] })
           this.$refs.number.applyResult({ errors: data.data.number ?? [] })
           this.$refs.description.applyResult({ errors: data.data.description ?? [] })
-          this.$refs.uom.applyResult({ errors: data.data.uom ?? [] })
+          this.$refs.unit.applyResult({ errors: data.data.unit_id ?? [] })
           this.$refs.price.applyResult({ errors: data.data.price ?? [] })
           this.$refs.stock.applyResult({ errors: data.data.stock ?? [] })
+          this.$refs.attachment.applyResult({ errors: data.data.attachment ?? [] })
         } else {
           alert(data.message)
         }
@@ -132,7 +158,21 @@ export default {
       this.materialCategories = data.data.map(materialCategory => {
         return { value: materialCategory.id, text: materialCategory.name }
       })
-    }
+    },
+    async getUnits() {
+      let { data } = await this.axios.get('unit')
+
+      this.units = data.data.map(unit => {
+        return { value: unit.id, text: unit.name }
+      })
+    },
+    async requestNumber() {
+      let { data } = await this.axios.get(`material/generate-number/${this.form.material_category_id}`)
+
+      console.log(data, 'data')
+
+      this.form.number = data.data.number
+    },
   }
 };
 </script>

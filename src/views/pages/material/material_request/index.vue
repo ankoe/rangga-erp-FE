@@ -1,22 +1,8 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'List'" :folder="'Material'" />
+    <breadcumb :page="'List'" :folder="'Material Request'" />
 
     <b-card class="wrapper">
-      <b-card-header>
-        <b-row>
-          <b-col lg="3" class="mt-auto">
-            <router-link :to="{ name: 'material-material-request-index' }" class="btn btn-link px-0 mb-3">
-              Material Request
-            </router-link>
-          </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link :to="{ name: 'material-create' }" class="btn btn-info btn-block btn-sm mb-3">
-              Tambah Material
-            </router-link>
-          </b-col>
-        </b-row>
-      </b-card-header>
 
       <b-table striped hover :items="items" :fields="fields" responsive="sm" :busy="loading" show-empty>
         <template #empty>
@@ -28,21 +14,28 @@
             <strong>Loading...</strong>
           </div>
         </template>
+        <template #cell(material_category.name)="{ value }">
+          {{ value ? value : '-' }}
+        </template>
         <template #cell(price)="{ value }">
           {{ $n(exchange(value), 'currency', getExchangeLocale) }}
         </template>
         <template #cell(stock)="{ value }">
           {{ $n(value, 'numbering', getExchangeLocale) }}
         </template>
+        <template #cell(created_at)="{ value }">
+          {{ value | luxon }}
+        </template>
         <template #cell(attachment)="{ value }">
           <a v-if="value" :href="value" target="_blank">Lihat</a>
           <span v-else>-</span>
         </template>
         <template #cell(action)="{ item }" class="text-right">
-          <router-link :to="{ name: 'material-edit', params: { id: item.id } }" class="btn btn-info btn-sm py-1 px-2">
-            Edit
+          <router-link :to="{ name: 'material-material-request-process', params: { id: item.id } }"
+            class="btn btn-info btn-sm py-1 px-2">
+            Process
           </router-link>
-          <b-button size="sm" variant="danger" class="ml-1 py-1 px-2" @click="onDelete(item)">Hapus</b-button>
+          <b-button size="sm" variant="danger" class="ml-1 py-1 px-2" @click="onReject(item)">Reject</b-button>
         </template>
       </b-table>
 
@@ -79,10 +72,6 @@ export default {
           label: 'Name',
         },
         {
-          key: 'number',
-          label: 'Number',
-        },
-        {
           key: 'description',
           label: 'Description',
         },
@@ -101,6 +90,14 @@ export default {
         {
           key: 'attachment',
           label: 'Attachment',
+        },
+        {
+          key: 'user.name',
+          label: 'User',
+        },
+        {
+          key: 'created_at',
+          label: 'Created',
         },
         {
           key: 'action',
@@ -128,7 +125,7 @@ export default {
       this.loading = true
 
       page = page ?? 1
-      let { data } = await this.axios.get('material?page=' + page)
+      let { data } = await this.axios.get('material/request?page=' + page)
 
       this.items = data.data
       this.meta.total = data.meta.total
@@ -137,9 +134,12 @@ export default {
 
       this.loading = false
     },
-    async onDelete(item) {
-      await this.axios.delete('material/' + item.id)
-      this.getItems()
+    async onReject(item) {
+      const result = confirm("Want to reject?")
+      if (result) {
+        await this.axios.delete('material/request/' + item.id)
+        this.getItems()
+      }
     },
   }
 }

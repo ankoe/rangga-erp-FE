@@ -14,6 +14,12 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
+                <b-form-group class="col-md-6 mb-3" label="Taxonomy (readonly)" label-for="input-1">
+                  <ValidationProvider ref="taxonomy" name="Taxonomy" rules="required|max:10" v-slot="{ errors }">
+                    <b-form-input v-model="form.taxonomy" type="text" placeholder="Taxonomy" readonly></b-form-input>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
 
                 <b-col md="12" class="d-flex justify-content-end">
                   <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
@@ -37,7 +43,8 @@ export default {
   data() {
     return {
       form: {
-        name: null
+        name: null,
+        taxonomy: null
       }
     }
   },
@@ -47,7 +54,8 @@ export default {
   methods: {
     async onSubmit() {
       let { data } = await this.axios.put('material-category/' + this.$route.params.id, {
-        name: this.form.name
+        name: this.form.name,
+        taxonomy: this.form.taxonomy
       })
 
       if (data.status == "SUCCESS") {
@@ -64,9 +72,11 @@ export default {
 
       if (data.status == "SUCCESS") {
         this.form.name = data.data.name
+        this.form.taxonomy = data.data.taxonomy
       } else {
         if (data.data) {
           this.$refs.name.applyResult({ errors: data.data.name ?? [] })
+          this.$refs.taxonomy.applyResult({ errors: data.data.taxonomy ?? [] })
         } else {
           alert(data.message)
         }

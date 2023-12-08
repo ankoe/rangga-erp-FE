@@ -61,7 +61,7 @@ export default {
     return {
       loading: false,
       filter: {
-        selected: null,
+        selected: 2,
         options: [],
       },
       items: [],

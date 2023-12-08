@@ -15,6 +15,14 @@
             <strong>Loading...</strong>
           </div>
         </template>
+
+        <template #cell(po_created_at)="{ value }">
+          {{ value | luxon }}
+        </template>
+        <template #cell(po_due_at)="{ value }">
+          {{ value | luxon }}
+          <!-- +2 -->
+        </template>
       </b-table>
 
       <div class="mt-3">
@@ -44,8 +52,24 @@ export default {
       items: [],
       fields: [
         {
+          key: 'code_po',
+          label: 'Number',
+        },
+        {
           key: 'status.description',
           label: 'Status',
+        },
+        {
+          key: 'winning_vendor.name',
+          label: 'Vendor Name',
+        },
+        {
+          key: 'po_created_at',
+          label: 'Release Date',
+        },
+        {
+          key: 'po_due_at',
+          label: 'Confirmation Due Date',
         },
       ],
       meta: {

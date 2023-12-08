@@ -6,14 +6,17 @@
       <b-card-header>
         <b-row>
           <b-col lg="3" class="mt-auto">
-            <h5>Total : {{ $n(exchange(total), 'currency', getExchangeLocale) }}</h5>
+            <h5 class="mb-1">Total : {{ $n(exchange(total), 'currency', getExchangeLocale) }}</h5>
 
           </b-col>
-          <b-col lg="3" offset-lg="6" class="mt-auto">
-            <router-link v-if="isEditable" :to="{ name: 'purchase-request-item-create', params: { id } }"
-              class="btn btn-info btn-block btn-sm mb-3">
+          <b-col v-if="isEditable" lg="4" offset-lg="5" class="mt-auto text-right">
+            <router-link :to="{ name: 'purchase-request-item-create', params: { id } }"
+              class="btn btn-info btn-sm mb-1 mr-2">
               Tambah Item
             </router-link>
+            <button type="button" class="btn btn-danger btn-sm mb-1" @click="onDeleteRequest">
+              Delete Purchase Request
+            </button>
           </b-col>
         </b-row>
       </b-card-header>
@@ -27,6 +30,11 @@
             <b-spinner class="align-middle"></b-spinner>
             <strong>Loading...</strong>
           </div>
+        </template>
+
+
+        <template #cell(quantity)="{ value }">
+          {{ $n(value, 'numbering', getExchangeLocale) }}
         </template>
 
         <template #cell(price)="{ value }">
@@ -57,10 +65,10 @@
           <div v-if="isEditable">
             <router-link
               :to="{ name: 'purchase-request-item-edit', params: { id: item.purchase_request_id, item: item.id } }"
-              class="btn btn-info btn-sm py-1 px-2">
+              class="btn btn-info btn-sm py-1 px-2 mb-1">
               Edit
             </router-link>
-            <button type="button" class="btn btn-danger btn-sm py-1 px-2" @click="onDeleteItem(item)">
+            <button type="button" class="btn btn-danger btn-sm py-1 px-2 mb-1" @click="onDeleteItem(item)">
               Delete
             </button>
           </div>
@@ -176,7 +184,7 @@ export default {
           label: 'Material Desc',
         },
         {
-          key: 'material.uom',
+          key: 'material.unit.name',
           label: 'UOM',
         },
         {
@@ -286,7 +294,6 @@ export default {
     async getItems() {
       this.loading = true
       let { data } = await this.axios.get('purchase-request/' + this.$route.params.id)
-
       this.id = data.data.id
       this.code = data.data.code
       this.total = data.data.total
@@ -297,15 +304,38 @@ export default {
 
       this.loading = false
     },
+    async onDeleteRequest() {
+      let result = confirm('Apakah yakin akan menghapus ' + this.code + '?')
+      if (result) {
+        let { data } = await this.axios.delete('purchase-request/' + this.id)
+
+        if (data.status == "SUCCESS") {
+          this.$router.push({ name: 'purchase-request-index' })
+        } else {
+          alert(data.message)
+        }
+
+      }
+    },
     async onDeleteItem(item) {
       let result = confirm('Apakah yakin akan menghapus ' + item.material.name + '?')
       if (result) {
-        let { data } = await this.axios.delete('purchase-request-item/' + item.id)
+        if (this.items.length > 1) {
+          let { data } = await this.axios.delete('purchase-request-item/' + item.id)
 
-        if (data.status == "SUCCESS") {
-          this.getItems()
+          if (data.status == "SUCCESS") {
+            this.getItems()
+          } else {
+            alert(data.message)
+          }
         } else {
-          alert(data.message)
+          let { data } = await this.axios.delete('purchase-request/' + this.id)
+
+          if (data.status == "SUCCESS") {
+            this.$router.push({ name: 'purchase-request-index' })
+          } else {
+            alert(data.message)
+          }
         }
 
       }

@@ -22,6 +22,15 @@
           </div>
         </template>
 
+
+        <template #cell(material.stock)="{ value }">
+          {{ value.replace('.', ',') }}
+        </template>
+
+        <template #cell(quantity)="{ value }">
+          {{ value.replace('.', ',') }}
+        </template>
+
         <template #cell(price)="{ value }">
           {{ $n(exchange(value), 'currency', getExchangeLocale) }}
         </template>
@@ -69,6 +78,14 @@
                 <b-spinner class="align-middle"></b-spinner>
                 <strong>Loading...</strong>
               </div>
+            </template>
+
+            <template #cell(material.stock)="{ value }">
+              {{ $n(value, 'numbering', getExchangeLocale) }}
+            </template>
+
+            <template #cell(quantity)="{ value }">
+              {{ $n(value, 'numbering', getExchangeLocale) }}
             </template>
 
             <template #cell(approve_user)="{ value }">
@@ -148,8 +165,12 @@ export default {
           label: 'Material Desc',
         },
         {
-          key: 'material.uom',
+          key: 'material.unit.name',
           label: 'UOM',
+        },
+        {
+          key: 'material.stock',
+          label: 'Stock',
         },
         {
           key: 'quantity',

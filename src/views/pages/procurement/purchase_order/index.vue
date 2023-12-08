@@ -16,11 +16,12 @@
           </div>
         </template>
 
-        <template #cell(created_at)="{ value }">
+        <template #cell(po_created_at)="{ value }">
           {{ value | luxon }}
         </template>
-        <template #cell(updated_at)="{ value }">
+        <template #cell(po_due_at)="{ value }">
           {{ value | luxon }}
+          <!-- +2 -->
         </template>
       </b-table>
 
@@ -51,20 +52,24 @@ export default {
       items: [],
       fields: [
         {
-          key: 'user.name',
-          label: 'Username',
+          key: 'code_po',
+          label: 'Number',
         },
         {
           key: 'status.description',
           label: 'Status',
         },
         {
-          key: 'created_at',
-          label: 'Created PR',
+          key: 'winning_vendor.name',
+          label: 'Vendor Name',
         },
         {
-          key: 'updated_at',
-          label: 'updated PR',
+          key: 'po_created_at',
+          label: 'Release Date',
+        },
+        {
+          key: 'po_due_at',
+          label: 'Confirmation Due Date',
         },
       ],
       meta: {

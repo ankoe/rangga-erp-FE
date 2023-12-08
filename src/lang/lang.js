@@ -8,14 +8,20 @@ const numberFormats = {
     currency: {
       style: 'currency',
       currency: 'USD'
-    }
+    },
+    numbering: {
+      minimumFractionDigits: 0,
+    },
   },
   'id-ID': {
     currency: {
       style: 'currency',
       currency: 'IDR',
       minimumFractionDigits: 0
-    }
+    },
+    numbering: {
+      minimumFractionDigits: 0,
+    },
   }
 }
 

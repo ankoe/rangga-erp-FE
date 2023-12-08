@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Edit'" :folder="'Material'" />
+    <breadcumb :page="'Create'" :folder="'Material Request'" />
 
     <b-row>
       <b-col md="12 mb-30">
@@ -8,13 +8,13 @@
           <ValidationObserver v-slot="{ handleSubmit }" ref="form">
             <b-form @submit.prevent="handleSubmit(onSubmit)">
               <b-row>
-                <b-form-group label="Material Category*" label-for="input-1" class="col-md-6 mb-3">
-                  <ValidationProvider ref="category" name="Material Category" rules="required" v-slot="{ errors }">
+                <b-form-group label="Material Category" label-for="input-1" class="col-md-6 mb-3">
+                  <ValidationProvider ref="category" name="Material Category" rules="" v-slot="{ errors }">
                     <b-form-select v-model="form.material_category_id" :options="materialCategories"
                       id="inline-form-custom-select-pref1">
                       <template #first>
-                        <b-form-select-option :value="null" disabled>-- Please select material category
-                          --</b-form-select-option>
+                        <b-form-select-option :value="null">--- no category
+                          ---</b-form-select-option>
                       </template>
                     </b-form-select>
                     <span class="text-danger small">{{ errors[0] }}</span>
@@ -26,14 +26,8 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="Number*" label-for="input-1">
-                  <ValidationProvider ref="number" name="Number" rules="required|max:30" v-slot="{ errors }">
-                    <b-form-input v-model="form.number" type="text" placeholder="Number"></b-form-input>
-                    <span class="text-danger small">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
                 <b-form-group class="col-md-6 mb-3" label="UOM*" label-for="input-1">
-                  <ValidationProvider ref="unit" name="UOM" rules="required|max:20" v-slot="{ errors }">
+                  <ValidationProvider ref="unit" name="UOM" rules="required" v-slot="{ errors }">
                     <b-form-select v-model="form.unit_id" :options="units" id="inline-form-custom-select-pref2">
                       <template #first>
                         <b-form-select-option :value="null" disabled>-- Please select UOM
@@ -43,9 +37,8 @@
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
-                <b-form-group class="col-md-6 mb-3" label="Price*" label-for="input-1">
-                  <ValidationProvider ref="price" name="Price" rules="required|numeric|max_value:99999999"
-                    v-slot="{ errors }">
+                <b-form-group class="col-md-6 mb-3" label="Price" label-for="input-1">
+                  <ValidationProvider ref="price" name="Price" rules="numeric|max_value:99999999" v-slot="{ errors }">
                     <b-input-group prepend="IDR">
                       <money v-model="form.price" type="text" placeholder="Price" class="form-control" />
                     </b-input-group>
@@ -59,21 +52,20 @@
                   </ValidationProvider>
                 </b-form-group>
 
+                <b-form-group label="Attachment*" label-for="input-1" class="col-md-6">
+                  <ValidationProvider ref="attachment" name="Attachment" rules="required" v-slot="{ errors }">
+                    <b-form-file v-model="form.attachment"
+                      accept=".jpg, .png, .jpeg, .pdf, .doc, .docx, .xls, .xlsx"></b-form-file>
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-form-group>
+
                 <b-form-group label="Description*" label-for="input-1" class="col-md-6">
                   <ValidationProvider ref="description" name="Description" rules="required" v-slot="{ errors }">
                     <b-form-textarea v-model="form.description" rows="5" no-resize
                       placeholder="Description"></b-form-textarea>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
-                </b-form-group>
-
-                <b-form-group label="Attachment" label-for="input-1" class="col-md-6">
-                  <ValidationProvider ref="attachment" name="Attachment" rules="" v-slot="{ errors }">
-                    <b-form-file v-model="form.attachment"
-                      accept=".jpg, .png, .jpeg, .pdf, .doc, .docx, .xls, .xlsx"></b-form-file>
-                    <span class="text-danger small">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                  <p>current: <a :href="attachment" target="_blank">Preview</a></p>
                 </b-form-group>
 
                 <b-col md="12" class="d-flex justify-content-end">
@@ -91,14 +83,13 @@
 <script>
 export default {
   metaInfo: {
-    title: "Material",
+    title: "Material Request - Create",
   },
   data() {
     return {
       form: {
         material_category_id: null,
         name: null,
-        number: null,
         description: null,
         unit_id: null,
         price: 0,
@@ -110,29 +101,25 @@ export default {
         precision: 2,
       },
       materialCategories: [],
-      units: [],
-      attachment: null
+      units: []
     }
   },
   mounted() {
     this.getMaterialCategories()
     this.getUnits()
-    this.getDetail()
   },
   methods: {
     async onSubmit() {
       const formData = new FormData()
-      formData.append('_method', 'PUT')
-      formData.append('material_category_id', this.form.material_category_id)
+      formData.append('material_category_id', this.form.material_category_id ?? '')
       formData.append('name', this.form.name)
-      formData.append('number', this.form.number)
       formData.append('description', this.form.description)
       formData.append('unit_id', this.form.unit_id)
       formData.append('price', this.form.price)
       formData.append('stock', this.form.stock)
-      formData.append('attachment', this.form.attachment ?? '')
+      formData.append('attachment', this.form.attachment)
 
-      let { data } = await this.axios.post('material/' + this.$route.params.id, formData, {
+      let { data } = await this.axios.post('material-request', formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -140,12 +127,11 @@ export default {
 
       if (data.status == "SUCCESS") {
         alert(data.message)
-        this.$router.push({ name: 'material-index' })
+        this.$router.push({ name: 'material-request-index' })
       } else {
         if (data.data) {
           this.$refs.category.applyResult({ errors: data.data.material_category_id ?? [] })
           this.$refs.name.applyResult({ errors: data.data.name ?? [] })
-          this.$refs.number.applyResult({ errors: data.data.number ?? [] })
           this.$refs.description.applyResult({ errors: data.data.description ?? [] })
           this.$refs.unit.applyResult({ errors: data.data.unit_id ?? [] })
           this.$refs.price.applyResult({ errors: data.data.price ?? [] })
@@ -154,24 +140,6 @@ export default {
         } else {
           alert(data.message)
         }
-      }
-    },
-    async getDetail() {
-      let { data } = await this.axios.get('material/' + this.$route.params.id)
-
-      if (data.status == "SUCCESS") {
-        this.form.material_category_id = data.data.material_category.id
-        this.form.name = data.data.name
-        this.form.number = data.data.number
-        this.form.description = data.data.description
-        this.form.unit_id = data.data.unit.id
-        this.form.price = data.data.price
-        this.form.stock = data.data.stock
-        this.attachment = data.data.attachment
-      } else {
-        // ada validation form
-
-        // jika tidak ada validation form, error global
       }
     },
     async getMaterialCategories() {

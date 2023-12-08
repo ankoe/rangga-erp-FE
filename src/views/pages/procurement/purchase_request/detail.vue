@@ -31,6 +31,10 @@
           </div>
         </template>
 
+        <template #cell(quantity)="{ value }">
+          {{ $n(value, 'numbering', getExchangeLocale) }}
+        </template>
+
         <template #cell(price)="{ value }">
           {{ $n(exchange(value), 'currency', getExchangeLocale) }}
         </template>

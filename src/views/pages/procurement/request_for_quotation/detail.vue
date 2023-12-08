@@ -9,6 +9,10 @@
             <h5>Number : {{ code }}</h5>
 
           </b-col>
+          <b-col offset-lg="6" lg="3" class="mt-auto text-lg-right">
+            <h5>Closing Date : {{ expectedAt | luxon({ output: { format: "dd-MM-yyyy" } }) }}</h5>
+
+          </b-col>
         </b-row>
       </b-card-header>
 
@@ -25,6 +29,10 @@
 
         <template #cell(price)="{ value }">
           {{ $n(exchange(value), 'currency', getExchangeLocale) }}
+        </template>
+
+        <template #cell(quantity)="{ value }">
+          {{ $n(value, 'numbering', getExchangeLocale) }}
         </template>
 
         <template #cell(expected_at)="{ value }">
@@ -61,31 +69,34 @@
               <b-row class="mb-4 pb-2 border-bottom">
                 <b-col class=""><b>Vendor Name</b></b-col>
                 <b-col class=""><b>Vendor Price</b></b-col>
-                <b-col class=""><b>Vendor Stock</b></b-col>
+                <b-col class=""><b>Quantity Commitment</b></b-col>
                 <b-col class=""><b>Incoterms</b></b-col>
-                <b-col class=""><b>Aggrement</b></b-col>
+                <b-col class=""><b>Commitment Delivery</b></b-col>
                 <b-col class=""><b>Choice</b></b-col>
               </b-row>
 
               <b-row v-for="(requestQuotation, index) in row.item.request_quotation" :key="index" class="mb-2">
                 <b-col class=""><b>{{ requestQuotation.vendor.name }}</b></b-col>
-                <b-col>{{ requestQuotation.vendor_price ? requestQuotation.vendor_price : '-' }}</b-col>
-                <b-col>{{ requestQuotation.vendor_stock ? requestQuotation.vendor_stock : '-' }}</b-col>
+                <b-col>{{ requestQuotation.vendor_price ? $n(exchange(requestQuotation.vendor_price), 'currency',
+                  getExchangeLocale)
+                  : '-' }}</b-col>
+                <b-col>{{ requestQuotation.vendor_stock ? $n(requestQuotation.vendor_stock, 'numbering',
+                  getExchangeLocale) : '-' }}</b-col>
                 <b-col>{{ requestQuotation.vendor_incoterms ? requestQuotation.vendor_incoterms : '-' }}</b-col>
                 <b-col>
-                  {{
-                    requestQuotation.vendor_is_agree != null ? (requestQuotation.vendor_is_agree ? 'Accept PO' : 'Refuse PO'
-                  ) : '-'
-                  }}
+                  <span v-if="requestQuotation.vendor_delivery_at">
+                    {{ requestQuotation.vendor_delivery_at | luxon({ output: { format: "dd-MM-yyyy" } }) }}
+                  </span>
+                  <span v-else>-</span>
                 </b-col>
                 <b-col>
                   <!-- belum pasti lokasi chatnya -->
                   <button type="button" class="btn btn-link text-decoration-none" @click="openChat(requestQuotation)">
                     <i class="i-Speach-Bubbles"></i>
                   </button>
-                  <b-form-radio v-if="status && status.title == 'waiting rfq approval'"
-                    v-model="row.item.request_quotation_selected" :aria-describedby="ariaDescribedby"
-                    :name="'request-quotation-' + requestQuotation.id" :value="requestQuotation.id">Pilih</b-form-radio>
+                  <b-form-radio v-if="!row.item.is_approve_rfq" v-model="row.item.request_quotation_selected"
+                    :aria-describedby="ariaDescribedby" :name="'request-quotation-' + requestQuotation.id"
+                    :value="requestQuotation.id">Pilih</b-form-radio>
                   <template v-else>
                     {{ requestQuotation.is_selected ? 'selected' : '-' }}
                   </template>
@@ -106,11 +117,11 @@
               class="btn btn-success btn-sm mb-3" @click="onSubmitVendor()">
               Submit Vendor
             </button>
-            <button v-if="status && status.title == 'waiting rfq approval'" type=" button"
+            <button v-if="status && status.title == 'waiting rfq approval' && !items[0].is_approve_rfq" type=" button"
               class="btn btn-success btn-sm mb-3" @click="onSubmitApproval()">
               Send Approval
             </button>
-            <template v-if="status && status.title == 'waiting po confirmation'">
+            <template v-if="status && status.title == 'waiting rfq approval' && items[0].is_approve_rfq">
               <div v-show="permissions.includes('procurement rfq approval')">
                 <button type=" button" class="btn btn-danger btn-sm mb-3" @click="onReject()">
                   Reject
@@ -140,6 +151,7 @@ export default {
       loading: false,
       code: null,
       status: null,
+      expectedAt: null,
       permissions: [],
       incoterms: [
         'Ex-Works or Ex-Warehouse',
@@ -169,7 +181,7 @@ export default {
           label: 'Material Desc',
         },
         {
-          key: 'material.uom',
+          key: 'material.unit.name',
           label: 'UOM',
         },
         {
@@ -227,12 +239,11 @@ export default {
     async getItems() {
       this.loading = true
       let { data } = await this.axios.get('procurement/request-for-quotation/' + this.$route.params.id)
-
-      this.id = data.data.id
-      this.code = data.data.code
+      this.code = data.data.code_rfq
+      this.expectedAt = data.data.expected_at
       this.status = data.data.status
 
-      this.items = data.data.items.map(item => {
+      this.items = [data.data].map(item => {
         item.tag = ''
         item.tags = []
         if (item.incoterms == null) item.incoterms = 'Free to Carrier'
@@ -250,7 +261,7 @@ export default {
     },
     filteredVendors(item) {
       return this.vendors.filter(vendor => {
-        return vendor.material_category.id == item.material.material_category.id
+        return vendor.material_categories.some(materialCategory => materialCategory.id == item.material.material_category.id)
       }).filter(vendor => {
         return vendor.name.toLowerCase().indexOf(item.tag.toLowerCase()) !== -1
       }).map(vendor => {
@@ -273,6 +284,10 @@ export default {
             })
           }
         })
+
+        const isConfirm = confirm('Are u sure submit vendor?')
+
+        if (!isConfirm) return
 
         let { data } = await this.axios.post(`procurement/request-for-quotation/${this.$route.params.id}/propose-vendor`, {
           items: items

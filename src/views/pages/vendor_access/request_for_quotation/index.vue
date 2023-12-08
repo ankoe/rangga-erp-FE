@@ -15,6 +15,10 @@
             <strong>Loading...</strong>
           </div>
         </template>
+
+        <template #cell(expected_at)="{ value }">
+          {{ value | luxon({ output: { format: "dd-MM-yyyy" } }) }}
+        </template>
       </b-table>
 
       <div class="mt-3">
@@ -40,8 +44,12 @@ export default {
       items: [],
       fields: [
         {
-          key: 'code',
+          key: 'code_rfq',
           label: 'Number',
+        },
+        {
+          key: 'expected_at',
+          label: 'Closing Date',
         },
       ],
       meta: {

@@ -3,18 +3,28 @@
     <div class="auth-content">
       <div class="card o-hidden">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6 pb-4">
             <div class="p-4">
               <div class="auth-logo text-center mb-30">
                 <img :src="logo" alt="" />
               </div>
-              <h1 class="mb-3 text-18">Forgot Password</h1>
+              <h1 class="mb-3 text-18">Reset Password</h1>
               <ValidationObserver v-slot="{ handleSubmit }">
                 <form @submit.prevent="handleSubmit(onSubmit)">
                   <div class="form-group">
-                    <label for="email">Email address</label>
-                    <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
-                      <input id="email" class="form-control form-control-rounded" type="email" v-model="form.email" />
+                    <label for="password">Password</label>
+                    <ValidationProvider ref="password" name="password" rules="required" v-slot="{ errors }">
+                      <b-form-input class="form-control form-control-rounded" label="Password" type="password"
+                        v-model.trim="form.password"></b-form-input>
+                      <span class="text-danger small">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                  <div class="form-group">
+                    <label for="repassword">Repeat Password</label>
+                    <ValidationProvider ref="repassword" name="repeat password" rules="required|confirmed:password"
+                      v-slot="{ errors }">
+                      <b-form-input class="form-control form-control-rounded" label="Repeat Password" type="password"
+                        v-model.trim="form.repassword"></b-form-input>
                       <span class="text-danger small">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -23,19 +33,14 @@
                   </button>
                 </form>
               </ValidationObserver>
-              <div class="mt-3 text-center">
-                <router-link :to="{ name: 'login' }" tag="a" class="text-muted ">
-                  <u>Login</u>
-                </router-link>
-              </div>
             </div>
           </div>
           <div class="col-md-6 text-center " style="background-size: cover"
             :style="{ backgroundImage: 'url(' + formImage + ')' }">
             <div class="pr-3 auth-right">
-              <router-link :to="{ name: 'register' }"
+              <router-link :to="{ name: 'login' }"
                 class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded">
-                Register
+                Login
               </router-link>
             </div>
           </div>
@@ -48,7 +53,10 @@
 export default {
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
-    title: "Forgot Password"
+    title: "Reset Password"
+  },
+  created() {
+    this.checkQuery()
   },
   data() {
     return {
@@ -56,8 +64,10 @@ export default {
       logo: require("@/assets/images/logo.png"),
       formImage: require("@/assets/images/photo-long-3.jpg"),
       submitted: false,
+      token: null,
       form: {
-        email: null
+        password: null,
+        repassword: null,
       }
     }
   },
@@ -65,23 +75,32 @@ export default {
     async onSubmit() {
       this.submitted = true
 
-      let { data } = await this.axios.get('auth/password/forgot',
+      let { data } = await this.axios.post('auth/password/reset',
         {
-          params: { email: this.form.email }
+          token: this.token,
+          password: this.form.password,
+          password_confirmation: this.form.repassword,
         })
 
-      console.log(data, 'data')
-
       if (data.status == "SUCCESS") {
-        // sementara, harusnya lewat store
-        // this.$router.push('/dashboard')
+        alert(data.message)
+        this.$router.push('/auth/login')
       } else {
-        // ada validation form
-
-        // jika tidak ada validation form, error global
+        if (data.data) {
+          this.$refs.password.applyResult({ errors: data.data.password ?? [] })
+          this.$refs.repassword.applyResult({ errors: data.data.password_confirmation ?? [] })
+        } else {
+          alert(data.message)
+        }
       }
 
       this.submitted = false
+    },
+    checkQuery() {
+      const tokenQuery = this.$route.query.token
+      console.log(tokenQuery)
+      if (!tokenQuery) this.$router.push('/auth/login')
+      else this.token = tokenQuery
     }
   }
 };

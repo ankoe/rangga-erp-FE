@@ -1,13 +1,13 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'List'" :folder="'Vendor'" />
+    <breadcumb :page="'List'" :folder="'Unit'" />
 
     <b-card class="wrapper">
       <b-card-header>
         <b-row>
           <b-col lg="3" offset-lg="9" class="mt-auto">
-            <router-link :to="{ name: 'vendor-create' }" class="btn btn-info btn-block btn-sm mb-3">
-              Tambah Vendor
+            <router-link :to="{ name: 'unit-create' }" class="btn btn-info btn-block btn-sm mb-3">
+              Tambah Unit
             </router-link>
           </b-col>
         </b-row>
@@ -23,20 +23,15 @@
             <strong>Loading...</strong>
           </div>
         </template>
-        <template #cell(email_cc)="{ value }">
-          {{ value.join(', ') }}
-        </template>
-        <template #cell(mobile)="{ value }">
-          {{ value.join(', ') }}
-        </template>
-        <template #cell(material_category.name)="{ item }">
-          {{ Array.prototype.map.call(item.material_categories, s => s.name).toString() }}
-        </template>
+
         <template #cell(action)="{ item }">
-          <router-link :to="{ name: 'vendor-edit', params: { id: item.id } }" class="btn btn-info btn-sm py-1 px-2">
-            Edit
-          </router-link>
-          <b-button size="sm" variant="danger" class="ml-1 py-1 px-2" @click="onDelete(item)">Hapus</b-button>
+          <template v-if="!item.is_default">
+            <router-link :to="{ name: 'unit-edit', params: { id: item.id } }" class="btn btn-info btn-sm py-1 px-2">
+              Edit
+            </router-link>
+            <b-button size="sm" variant="danger" class="ml-1 py-1 px-2" @click="onDelete(item)">Hapus</b-button>
+          </template>
+          <span v-else class="font-italic small text-secondary">Cant be modify</span>
         </template>
       </b-table>
 
@@ -48,40 +43,20 @@
 
   </div>
 </template>
+
 <script>
 export default {
   metaInfo: {
-    title: "Vendor",
+    title: "Unit"
   },
   data() {
     return {
-      token: localStorage.getItem("token"),
       loading: false,
-      filter: {
-        selected: null,
-        options: [],
-      },
       items: [],
       fields: [
         {
           key: 'name',
           label: 'Name',
-        },
-        {
-          key: 'email',
-          label: 'Email',
-        },
-        {
-          key: 'email_cc',
-          label: 'Email CC',
-        },
-        {
-          key: 'mobile',
-          label: 'Phone',
-        },
-        {
-          key: 'material_category.name',
-          label: 'material category',
         },
         {
           key: 'action',
@@ -100,21 +75,16 @@ export default {
   },
   methods: {
     async getItems(page) {
-      this.loading = true
       page = page ?? 1
-      let { data } = await this.axios.get('vendor?page=' + page, {
-        headers: { Authorization: 'Bearer ' + this.token }
-      })
+      let { data } = await this.axios.get('unit?page=' + page)
 
       this.items = data.data
       this.meta.total = data.meta.total
       this.meta.perPage = data.meta.per_page
       this.meta.currentPage = data.meta.current_page
-
-      this.loading = false
     },
     async onDelete(item) {
-      await this.axios.delete('vendor/' + item.id)
+      await this.axios.delete('unit/' + item.id)
 
       this.getItems()
     },

@@ -30,7 +30,7 @@
                 </b-form-group>
                 <b-form-group class="col-md-6 mb-3" label="UOM*" label-for="input-1">
                   <ValidationProvider ref="uom" name="UOM" rules="required" v-slot="{ errors }">
-                    <b-form-input v-model="form.material_uom" type="text" required placeholder="UOM"
+                    <b-form-input v-model="form.material_unit" type="text" required placeholder="UOM"
                       readonly></b-form-input>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -46,9 +46,9 @@
                   </ValidationProvider>
                 </b-form-group>
                 <b-form-group class="col-md-6 mb-3" label="QTY*" label-for="input-1">
-                  <ValidationProvider ref="qty" name="QTY" rules="required|numeric|max_value:99999999"
-                    v-slot="{ errors }">
-                    <money v-model="form.qty" type="text" required placeholder="QTY" class="form-control" />
+                  <ValidationProvider ref="qty" name="QTY" rules="required|max_value:99999999" v-slot="{ errors }">
+                    <money v-model="form.qty" type="text" required placeholder="QTY" class="form-control"
+                      v-bind="money" />
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
@@ -57,7 +57,7 @@
                   <ValidationProvider ref="total" name="Unit Total" rules="required" v-slot="{ errors }">
                     <b-input-group prepend="IDR">
                       <money type="text" required placeholder="Unit Total" :value="calculateTotal" readonly
-                        class="form-control" />
+                        class="form-control" v-bind="money" />
                     </b-input-group>
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -95,15 +95,17 @@
                   </ValidationProvider>
                 </b-form-group>
 
-                <b-form-group label="File*" label-for="input-1" class="col-md-6">
-                  <ValidationProvider ref="file" name="File" rules="required" v-slot="{ errors }">
+                <b-form-group label="File" label-for="input-1" class="col-md-6">
+                  <ValidationProvider ref="file" name="File" rules="" v-slot="{ errors }">
                     <b-form-file v-model="form.file" placeholder="Choose a file or drop it here..."
                       drop-placeholder="Drop file here..." />
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
+                  <div v-show="form.attachment" class="mt-3">
+                    <a :href="form.attachment" target="_blank">Attachment from
+                      material</a>
+                  </div>
                 </b-form-group>
-
-
 
                 <b-col md="12" class="d-flex justify-content-end">
                   <router-link :to="{ name: 'purchase-request-detail', params: { id: $route.params.id } }"
@@ -134,14 +136,19 @@ export default {
       form: {
         material_id: null,
         material_description: null,
-        material_uom: null,
+        material_unit: null,
         material_price: 0,
         qty: 1,
         vendor_id: null,
         location_id: null,
         expected_date: null,
         file: null,
-      }
+        attachment: null,
+      },
+      money: {
+        decimal: ',',
+        precision: 2,
+      },
     }
   },
   mounted() {
@@ -158,10 +165,12 @@ export default {
     getOptionVendors() {
       if (!this.form.material_id) return []
 
-      const materials = this.materials.filter(material => material.id == this.form.material_id)
+      const material = this.materials.find(material => material.id == this.form.material_id)
+
+      if (!material) return []
 
       const vendors = this.vendors
-        .filter(vendor => vendor.material_category.id == materials[0].material_category.id)
+        .filter(vendor => vendor.material_categories.some(materialCategory => materialCategory.id == material.material_category.id))
 
       return vendors.map(vendor => {
         return { value: vendor.id, text: vendor.name }
@@ -195,9 +204,10 @@ export default {
     onInitMaterial() {
       const materials = this.materials.filter(material => material.id == this.form.material_id)
       this.form.material_description = materials[0].description
-      this.form.material_uom = materials[0].uom
+      this.form.material_unit = materials[0].unit.name
       this.form.material_price = materials[0].price
       this.form.vendor_id = null
+      this.form.attachment = materials[0].attachment
     },
     async onSubmit() {
       let formData = new FormData()

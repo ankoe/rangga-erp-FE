@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="'Edit'" :folder="'Material'" />
+    <breadcumb :page="'Process'" :folder="'Material'" />
 
     <b-row>
       <b-col md="12 mb-30">
@@ -53,8 +53,9 @@
                   </ValidationProvider>
                 </b-form-group>
                 <b-form-group class="col-md-6 mb-3" label="Stock*" label-for="input-1">
-                  <ValidationProvider ref="stock" name="Stock" rules="required|max_value:99999999" v-slot="{ errors }">
-                    <money v-model="form.stock" type="text" placeholder="Stock" class="form-control" v-bind="money" />
+                  <ValidationProvider ref="stock" name="Stock" rules="required|numeric|max_value:99999999"
+                    v-slot="{ errors }">
+                    <money v-model="form.stock" type="text" placeholder="Stock" class="form-control" />
                     <span class="text-danger small">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </b-form-group>
@@ -77,7 +78,8 @@
                 </b-form-group>
 
                 <b-col md="12" class="d-flex justify-content-end">
-                  <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
+                  <b-button variant="danger" class="mt-3 mr-2" @click="onReject">Reject</b-button>
+                  <b-button class="mt-3" type="submit" variant="success">Process</b-button>
                 </b-col>
               </b-row>
             </b-form>
@@ -105,10 +107,6 @@ export default {
         stock: 0,
         attachment: null
       },
-      money: {
-        decimal: ',',
-        precision: 2,
-      },
       materialCategories: [],
       units: [],
       attachment: null
@@ -122,7 +120,6 @@ export default {
   methods: {
     async onSubmit() {
       const formData = new FormData()
-      formData.append('_method', 'PUT')
       formData.append('material_category_id', this.form.material_category_id)
       formData.append('name', this.form.name)
       formData.append('number', this.form.number)
@@ -130,9 +127,9 @@ export default {
       formData.append('unit_id', this.form.unit_id)
       formData.append('price', this.form.price)
       formData.append('stock', this.form.stock)
-      formData.append('attachment', this.form.attachment ?? '')
+      formData.append('attachment', this.form.attachment ? this.form.attachment : '')
 
-      let { data } = await this.axios.post('material/' + this.$route.params.id, formData, {
+      let { data } = await this.axios.post('material/request/' + this.$route.params.id, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -140,7 +137,7 @@ export default {
 
       if (data.status == "SUCCESS") {
         alert(data.message)
-        this.$router.push({ name: 'material-index' })
+        this.$router.push({ name: 'material-material-request-index' })
       } else {
         if (data.data) {
           this.$refs.category.applyResult({ errors: data.data.material_category_id ?? [] })
@@ -157,10 +154,10 @@ export default {
       }
     },
     async getDetail() {
-      let { data } = await this.axios.get('material/' + this.$route.params.id)
+      let { data } = await this.axios.get('material/request/' + this.$route.params.id)
 
       if (data.status == "SUCCESS") {
-        this.form.material_category_id = data.data.material_category.id
+        this.form.material_category_id = data.data.material_category ? data.data.material_category.id : null
         this.form.name = data.data.name
         this.form.number = data.data.number
         this.form.description = data.data.description
@@ -187,6 +184,13 @@ export default {
       this.units = data.data.map(unit => {
         return { value: unit.id, text: unit.name }
       })
+    },
+    async onReject() {
+      const result = confirm("Want to reject?")
+      if (result) {
+        await this.axios.delete('material/request/' + this.$route.params.id)
+        this.$router.push({ name: 'material-material-request-index' })
+      }
     },
   }
 };

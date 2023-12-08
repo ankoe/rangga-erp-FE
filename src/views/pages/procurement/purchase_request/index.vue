@@ -9,7 +9,7 @@
             <b-form-group id="fieldset-1" label="" label-for="input-1">
 
               <b-form-group id="fieldset-1" label="Filter Status :" label-for="input-1">
-                <b-form-select size="sm" v-model="filter.selected" :options="filter.options" v-on:change="getItems()">
+                <b-form-select size="sm" v-model="filter.selected" :options="filterOptions" v-on:change="getItems()">
                   <template #first>
                     <b-form-select-option :value="null">All</b-form-select-option>
                   </template>
@@ -107,7 +107,11 @@ export default {
     this.getFilterOptions()
   },
   computed: {
-    ...mapGetters(["getRate", "getExchangeLocale"])
+    filterOptions: function () {
+      return this.filter.options.filter(item => item.value >= 4)
+    },
+    ...mapGetters(["getRate", "getExchangeLocale"]),
+
   },
   methods: {
     exchange(value) {
